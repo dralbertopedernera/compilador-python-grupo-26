@@ -1,0 +1,2161 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    IF
+
+Grammar
+
+Rule 0     S' -> program
+Rule 1     program -> stmt_list
+Rule 2     stmt_list -> stmt_list stmt_line
+Rule 3     stmt_list -> stmt_line
+Rule 4     stmt_line -> simple_stmt NEWLINE
+Rule 5     stmt_line -> funcdef
+Rule 6     stmt_line -> NEWLINE
+Rule 7     funcdef -> DEF NAME LPAREN NAME COMMA NAME RPAREN COLON NEWLINE INDENT stmt_block DEDENT
+Rule 8     stmt_block -> stmt_block stmt_line
+Rule 9     stmt_block -> stmt_line
+Rule 10    simple_stmt -> assign_stmt
+Rule 11    simple_stmt -> expr_stmt
+Rule 12    assign_stmt -> NAME assign_op expr
+Rule 13    assign_op -> EQUAL
+Rule 14    assign_op -> PLUSEQ
+Rule 15    assign_op -> MINUSEQ
+Rule 16    expr_stmt -> expr
+Rule 17    expr -> or_expr
+Rule 18    or_expr -> and_expr
+Rule 19    or_expr -> or_expr OR and_expr
+Rule 20    and_expr -> not_expr
+Rule 21    and_expr -> and_expr AND not_expr
+Rule 22    not_expr -> NOT not_expr
+Rule 23    not_expr -> comparison
+Rule 24    comparison -> arith_expr
+Rule 25    comparison -> arith_expr comp_op arith_expr
+Rule 26    comp_op -> EQEQ
+Rule 27    comp_op -> NEQ
+Rule 28    comp_op -> LT
+Rule 29    comp_op -> GT
+Rule 30    arith_expr -> term
+Rule 31    arith_expr -> arith_expr PLUS term
+Rule 32    arith_expr -> arith_expr MINUS term
+Rule 33    term -> factor
+Rule 34    term -> term TIMES factor
+Rule 35    term -> term DIVIDE factor
+Rule 36    factor -> MINUS factor
+Rule 37    factor -> atom
+Rule 38    atom -> NAME
+Rule 39    atom -> literal
+Rule 40    atom -> LPAREN expr RPAREN
+Rule 41    atom -> call
+Rule 42    call -> NAME LPAREN arglist_opt RPAREN
+Rule 43    call -> PRINT LPAREN arglist_opt RPAREN
+Rule 44    call -> LEN LPAREN arglist_opt RPAREN
+Rule 45    call -> ROUND LPAREN arglist_opt RPAREN
+Rule 46    arglist_opt -> empty
+Rule 47    arglist_opt -> arglist
+Rule 48    arglist -> expr
+Rule 49    arglist -> arglist COMMA expr
+Rule 50    literal -> INT
+Rule 51    literal -> FLOAT
+Rule 52    literal -> STRING
+Rule 53    empty -> <empty>
+
+Terminals, with rules where they appear
+
+AND                  : 21
+COLON                : 7
+COMMA                : 7 49
+DEDENT               : 7
+DEF                  : 7
+DIVIDE               : 35
+EQEQ                 : 26
+EQUAL                : 13
+FLOAT                : 51
+GT                   : 29
+IF                   : 
+INDENT               : 7
+INT                  : 50
+LEN                  : 44
+LPAREN               : 7 40 42 43 44 45
+LT                   : 28
+MINUS                : 32 36
+MINUSEQ              : 15
+NAME                 : 7 7 7 12 38 42
+NEQ                  : 27
+NEWLINE              : 4 6 7
+NOT                  : 22
+OR                   : 19
+PLUS                 : 31
+PLUSEQ               : 14
+PRINT                : 43
+ROUND                : 45
+RPAREN               : 7 40 42 43 44 45
+STRING               : 52
+TIMES                : 34
+error                : 
+
+Nonterminals, with rules where they appear
+
+and_expr             : 18 19 21
+arglist              : 47 49
+arglist_opt          : 42 43 44 45
+arith_expr           : 24 25 25 31 32
+assign_op            : 12
+assign_stmt          : 10
+atom                 : 37
+call                 : 41
+comp_op              : 25
+comparison           : 23
+empty                : 46
+expr                 : 12 16 40 48 49
+expr_stmt            : 11
+factor               : 33 34 35 36
+funcdef              : 5
+literal              : 39
+not_expr             : 20 21 22
+or_expr              : 17 19
+program              : 0
+simple_stmt          : 4
+stmt_block           : 7 8
+stmt_line            : 2 3 8 9
+stmt_list            : 1 2
+term                 : 30 31 32 34 35
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . program
+    (1) program -> . stmt_list
+    (2) stmt_list -> . stmt_list stmt_line
+    (3) stmt_list -> . stmt_line
+    (4) stmt_line -> . simple_stmt NEWLINE
+    (5) stmt_line -> . funcdef
+    (6) stmt_line -> . NEWLINE
+    (10) simple_stmt -> . assign_stmt
+    (11) simple_stmt -> . expr_stmt
+    (7) funcdef -> . DEF NAME LPAREN NAME COMMA NAME RPAREN COLON NEWLINE INDENT stmt_block DEDENT
+    (12) assign_stmt -> . NAME assign_op expr
+    (16) expr_stmt -> . expr
+    (17) expr -> . or_expr
+    (18) or_expr -> . and_expr
+    (19) or_expr -> . or_expr OR and_expr
+    (20) and_expr -> . not_expr
+    (21) and_expr -> . and_expr AND not_expr
+    (22) not_expr -> . NOT not_expr
+    (23) not_expr -> . comparison
+    (24) comparison -> . arith_expr
+    (25) comparison -> . arith_expr comp_op arith_expr
+    (30) arith_expr -> . term
+    (31) arith_expr -> . arith_expr PLUS term
+    (32) arith_expr -> . arith_expr MINUS term
+    (33) term -> . factor
+    (34) term -> . term TIMES factor
+    (35) term -> . term DIVIDE factor
+    (36) factor -> . MINUS factor
+    (37) factor -> . atom
+    (38) atom -> . NAME
+    (39) atom -> . literal
+    (40) atom -> . LPAREN expr RPAREN
+    (41) atom -> . call
+    (50) literal -> . INT
+    (51) literal -> . FLOAT
+    (52) literal -> . STRING
+    (42) call -> . NAME LPAREN arglist_opt RPAREN
+    (43) call -> . PRINT LPAREN arglist_opt RPAREN
+    (44) call -> . LEN LPAREN arglist_opt RPAREN
+    (45) call -> . ROUND LPAREN arglist_opt RPAREN
+
+    NEWLINE         shift and go to state 5
+    DEF             shift and go to state 9
+    NAME            shift and go to state 10
+    NOT             shift and go to state 16
+    MINUS           shift and go to state 20
+    LPAREN          shift and go to state 11
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    STRING          shift and go to state 27
+    PRINT           shift and go to state 28
+    LEN             shift and go to state 29
+    ROUND           shift and go to state 30
+
+    program                        shift and go to state 1
+    stmt_list                      shift and go to state 2
+    stmt_line                      shift and go to state 3
+    simple_stmt                    shift and go to state 4
+    funcdef                        shift and go to state 6
+    assign_stmt                    shift and go to state 7
+    expr_stmt                      shift and go to state 8
+    expr                           shift and go to state 12
+    or_expr                        shift and go to state 13
+    and_expr                       shift and go to state 14
+    not_expr                       shift and go to state 15
+    comparison                     shift and go to state 17
+    arith_expr                     shift and go to state 18
+    term                           shift and go to state 19
+    factor                         shift and go to state 21
+    atom                           shift and go to state 22
+    literal                        shift and go to state 23
+    call                           shift and go to state 24
+
+state 1
+
+    (0) S' -> program .
+
+
+
+state 2
+
+    (1) program -> stmt_list .
+    (2) stmt_list -> stmt_list . stmt_line
+    (4) stmt_line -> . simple_stmt NEWLINE
+    (5) stmt_line -> . funcdef
+    (6) stmt_line -> . NEWLINE
+    (10) simple_stmt -> . assign_stmt
+    (11) simple_stmt -> . expr_stmt
+    (7) funcdef -> . DEF NAME LPAREN NAME COMMA NAME RPAREN COLON NEWLINE INDENT stmt_block DEDENT
+    (12) assign_stmt -> . NAME assign_op expr
+    (16) expr_stmt -> . expr
+    (17) expr -> . or_expr
+    (18) or_expr -> . and_expr
+    (19) or_expr -> . or_expr OR and_expr
+    (20) and_expr -> . not_expr
+    (21) and_expr -> . and_expr AND not_expr
+    (22) not_expr -> . NOT not_expr
+    (23) not_expr -> . comparison
+    (24) comparison -> . arith_expr
+    (25) comparison -> . arith_expr comp_op arith_expr
+    (30) arith_expr -> . term
+    (31) arith_expr -> . arith_expr PLUS term
+    (32) arith_expr -> . arith_expr MINUS term
+    (33) term -> . factor
+    (34) term -> . term TIMES factor
+    (35) term -> . term DIVIDE factor
+    (36) factor -> . MINUS factor
+    (37) factor -> . atom
+    (38) atom -> . NAME
+    (39) atom -> . literal
+    (40) atom -> . LPAREN expr RPAREN
+    (41) atom -> . call
+    (50) literal -> . INT
+    (51) literal -> . FLOAT
+    (52) literal -> . STRING
+    (42) call -> . NAME LPAREN arglist_opt RPAREN
+    (43) call -> . PRINT LPAREN arglist_opt RPAREN
+    (44) call -> . LEN LPAREN arglist_opt RPAREN
+    (45) call -> . ROUND LPAREN arglist_opt RPAREN
+
+    $end            reduce using rule 1 (program -> stmt_list .)
+    NEWLINE         shift and go to state 5
+    DEF             shift and go to state 9
+    NAME            shift and go to state 10
+    NOT             shift and go to state 16
+    MINUS           shift and go to state 20
+    LPAREN          shift and go to state 11
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    STRING          shift and go to state 27
+    PRINT           shift and go to state 28
+    LEN             shift and go to state 29
+    ROUND           shift and go to state 30
+
+    stmt_line                      shift and go to state 31
+    simple_stmt                    shift and go to state 4
+    funcdef                        shift and go to state 6
+    assign_stmt                    shift and go to state 7
+    expr_stmt                      shift and go to state 8
+    expr                           shift and go to state 12
+    or_expr                        shift and go to state 13
+    and_expr                       shift and go to state 14
+    not_expr                       shift and go to state 15
+    comparison                     shift and go to state 17
+    arith_expr                     shift and go to state 18
+    term                           shift and go to state 19
+    factor                         shift and go to state 21
+    atom                           shift and go to state 22
+    literal                        shift and go to state 23
+    call                           shift and go to state 24
+
+state 3
+
+    (3) stmt_list -> stmt_line .
+
+    NEWLINE         reduce using rule 3 (stmt_list -> stmt_line .)
+    DEF             reduce using rule 3 (stmt_list -> stmt_line .)
+    NAME            reduce using rule 3 (stmt_list -> stmt_line .)
+    NOT             reduce using rule 3 (stmt_list -> stmt_line .)
+    MINUS           reduce using rule 3 (stmt_list -> stmt_line .)
+    LPAREN          reduce using rule 3 (stmt_list -> stmt_line .)
+    INT             reduce using rule 3 (stmt_list -> stmt_line .)
+    FLOAT           reduce using rule 3 (stmt_list -> stmt_line .)
+    STRING          reduce using rule 3 (stmt_list -> stmt_line .)
+    PRINT           reduce using rule 3 (stmt_list -> stmt_line .)
+    LEN             reduce using rule 3 (stmt_list -> stmt_line .)
+    ROUND           reduce using rule 3 (stmt_list -> stmt_line .)
+    $end            reduce using rule 3 (stmt_list -> stmt_line .)
+
+
+state 4
+
+    (4) stmt_line -> simple_stmt . NEWLINE
+
+    NEWLINE         shift and go to state 32
+
+
+state 5
+
+    (6) stmt_line -> NEWLINE .
+
+    NEWLINE         reduce using rule 6 (stmt_line -> NEWLINE .)
+    DEF             reduce using rule 6 (stmt_line -> NEWLINE .)
+    NAME            reduce using rule 6 (stmt_line -> NEWLINE .)
+    NOT             reduce using rule 6 (stmt_line -> NEWLINE .)
+    MINUS           reduce using rule 6 (stmt_line -> NEWLINE .)
+    LPAREN          reduce using rule 6 (stmt_line -> NEWLINE .)
+    INT             reduce using rule 6 (stmt_line -> NEWLINE .)
+    FLOAT           reduce using rule 6 (stmt_line -> NEWLINE .)
+    STRING          reduce using rule 6 (stmt_line -> NEWLINE .)
+    PRINT           reduce using rule 6 (stmt_line -> NEWLINE .)
+    LEN             reduce using rule 6 (stmt_line -> NEWLINE .)
+    ROUND           reduce using rule 6 (stmt_line -> NEWLINE .)
+    $end            reduce using rule 6 (stmt_line -> NEWLINE .)
+    DEDENT          reduce using rule 6 (stmt_line -> NEWLINE .)
+
+
+state 6
+
+    (5) stmt_line -> funcdef .
+
+    NEWLINE         reduce using rule 5 (stmt_line -> funcdef .)
+    DEF             reduce using rule 5 (stmt_line -> funcdef .)
+    NAME            reduce using rule 5 (stmt_line -> funcdef .)
+    NOT             reduce using rule 5 (stmt_line -> funcdef .)
+    MINUS           reduce using rule 5 (stmt_line -> funcdef .)
+    LPAREN          reduce using rule 5 (stmt_line -> funcdef .)
+    INT             reduce using rule 5 (stmt_line -> funcdef .)
+    FLOAT           reduce using rule 5 (stmt_line -> funcdef .)
+    STRING          reduce using rule 5 (stmt_line -> funcdef .)
+    PRINT           reduce using rule 5 (stmt_line -> funcdef .)
+    LEN             reduce using rule 5 (stmt_line -> funcdef .)
+    ROUND           reduce using rule 5 (stmt_line -> funcdef .)
+    $end            reduce using rule 5 (stmt_line -> funcdef .)
+    DEDENT          reduce using rule 5 (stmt_line -> funcdef .)
+
+
+state 7
+
+    (10) simple_stmt -> assign_stmt .
+
+    NEWLINE         reduce using rule 10 (simple_stmt -> assign_stmt .)
+
+
+state 8
+
+    (11) simple_stmt -> expr_stmt .
+
+    NEWLINE         reduce using rule 11 (simple_stmt -> expr_stmt .)
+
+
+state 9
+
+    (7) funcdef -> DEF . NAME LPAREN NAME COMMA NAME RPAREN COLON NEWLINE INDENT stmt_block DEDENT
+
+    NAME            shift and go to state 33
+
+
+state 10
+
+    (12) assign_stmt -> NAME . assign_op expr
+    (38) atom -> NAME .
+    (42) call -> NAME . LPAREN arglist_opt RPAREN
+    (13) assign_op -> . EQUAL
+    (14) assign_op -> . PLUSEQ
+    (15) assign_op -> . MINUSEQ
+
+    TIMES           reduce using rule 38 (atom -> NAME .)
+    DIVIDE          reduce using rule 38 (atom -> NAME .)
+    PLUS            reduce using rule 38 (atom -> NAME .)
+    MINUS           reduce using rule 38 (atom -> NAME .)
+    EQEQ            reduce using rule 38 (atom -> NAME .)
+    NEQ             reduce using rule 38 (atom -> NAME .)
+    LT              reduce using rule 38 (atom -> NAME .)
+    GT              reduce using rule 38 (atom -> NAME .)
+    AND             reduce using rule 38 (atom -> NAME .)
+    OR              reduce using rule 38 (atom -> NAME .)
+    NEWLINE         reduce using rule 38 (atom -> NAME .)
+    LPAREN          shift and go to state 35
+    EQUAL           shift and go to state 36
+    PLUSEQ          shift and go to state 37
+    MINUSEQ         shift and go to state 38
+
+    assign_op                      shift and go to state 34
+
+state 11
+
+    (40) atom -> LPAREN . expr RPAREN
+    (17) expr -> . or_expr
+    (18) or_expr -> . and_expr
+    (19) or_expr -> . or_expr OR and_expr
+    (20) and_expr -> . not_expr
+    (21) and_expr -> . and_expr AND not_expr
+    (22) not_expr -> . NOT not_expr
+    (23) not_expr -> . comparison
+    (24) comparison -> . arith_expr
+    (25) comparison -> . arith_expr comp_op arith_expr
+    (30) arith_expr -> . term
+    (31) arith_expr -> . arith_expr PLUS term
+    (32) arith_expr -> . arith_expr MINUS term
+    (33) term -> . factor
+    (34) term -> . term TIMES factor
+    (35) term -> . term DIVIDE factor
+    (36) factor -> . MINUS factor
+    (37) factor -> . atom
+    (38) atom -> . NAME
+    (39) atom -> . literal
+    (40) atom -> . LPAREN expr RPAREN
+    (41) atom -> . call
+    (50) literal -> . INT
+    (51) literal -> . FLOAT
+    (52) literal -> . STRING
+    (42) call -> . NAME LPAREN arglist_opt RPAREN
+    (43) call -> . PRINT LPAREN arglist_opt RPAREN
+    (44) call -> . LEN LPAREN arglist_opt RPAREN
+    (45) call -> . ROUND LPAREN arglist_opt RPAREN
+
+    NOT             shift and go to state 16
+    MINUS           shift and go to state 20
+    NAME            shift and go to state 40
+    LPAREN          shift and go to state 11
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    STRING          shift and go to state 27
+    PRINT           shift and go to state 28
+    LEN             shift and go to state 29
+    ROUND           shift and go to state 30
+
+    expr                           shift and go to state 39
+    or_expr                        shift and go to state 13
+    and_expr                       shift and go to state 14
+    not_expr                       shift and go to state 15
+    comparison                     shift and go to state 17
+    arith_expr                     shift and go to state 18
+    term                           shift and go to state 19
+    factor                         shift and go to state 21
+    atom                           shift and go to state 22
+    literal                        shift and go to state 23
+    call                           shift and go to state 24
+
+state 12
+
+    (16) expr_stmt -> expr .
+
+    NEWLINE         reduce using rule 16 (expr_stmt -> expr .)
+
+
+state 13
+
+    (17) expr -> or_expr .
+    (19) or_expr -> or_expr . OR and_expr
+
+    NEWLINE         reduce using rule 17 (expr -> or_expr .)
+    RPAREN          reduce using rule 17 (expr -> or_expr .)
+    COMMA           reduce using rule 17 (expr -> or_expr .)
+    OR              shift and go to state 41
+
+
+state 14
+
+    (18) or_expr -> and_expr .
+    (21) and_expr -> and_expr . AND not_expr
+
+    OR              reduce using rule 18 (or_expr -> and_expr .)
+    NEWLINE         reduce using rule 18 (or_expr -> and_expr .)
+    RPAREN          reduce using rule 18 (or_expr -> and_expr .)
+    COMMA           reduce using rule 18 (or_expr -> and_expr .)
+    AND             shift and go to state 42
+
+
+state 15
+
+    (20) and_expr -> not_expr .
+
+    AND             reduce using rule 20 (and_expr -> not_expr .)
+    OR              reduce using rule 20 (and_expr -> not_expr .)
+    NEWLINE         reduce using rule 20 (and_expr -> not_expr .)
+    RPAREN          reduce using rule 20 (and_expr -> not_expr .)
+    COMMA           reduce using rule 20 (and_expr -> not_expr .)
+
+
+state 16
+
+    (22) not_expr -> NOT . not_expr
+    (22) not_expr -> . NOT not_expr
+    (23) not_expr -> . comparison
+    (24) comparison -> . arith_expr
+    (25) comparison -> . arith_expr comp_op arith_expr
+    (30) arith_expr -> . term
+    (31) arith_expr -> . arith_expr PLUS term
+    (32) arith_expr -> . arith_expr MINUS term
+    (33) term -> . factor
+    (34) term -> . term TIMES factor
+    (35) term -> . term DIVIDE factor
+    (36) factor -> . MINUS factor
+    (37) factor -> . atom
+    (38) atom -> . NAME
+    (39) atom -> . literal
+    (40) atom -> . LPAREN expr RPAREN
+    (41) atom -> . call
+    (50) literal -> . INT
+    (51) literal -> . FLOAT
+    (52) literal -> . STRING
+    (42) call -> . NAME LPAREN arglist_opt RPAREN
+    (43) call -> . PRINT LPAREN arglist_opt RPAREN
+    (44) call -> . LEN LPAREN arglist_opt RPAREN
+    (45) call -> . ROUND LPAREN arglist_opt RPAREN
+
+    NOT             shift and go to state 16
+    MINUS           shift and go to state 20
+    NAME            shift and go to state 40
+    LPAREN          shift and go to state 11
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    STRING          shift and go to state 27
+    PRINT           shift and go to state 28
+    LEN             shift and go to state 29
+    ROUND           shift and go to state 30
+
+    not_expr                       shift and go to state 43
+    comparison                     shift and go to state 17
+    arith_expr                     shift and go to state 18
+    term                           shift and go to state 19
+    factor                         shift and go to state 21
+    atom                           shift and go to state 22
+    literal                        shift and go to state 23
+    call                           shift and go to state 24
+
+state 17
+
+    (23) not_expr -> comparison .
+
+    AND             reduce using rule 23 (not_expr -> comparison .)
+    OR              reduce using rule 23 (not_expr -> comparison .)
+    NEWLINE         reduce using rule 23 (not_expr -> comparison .)
+    RPAREN          reduce using rule 23 (not_expr -> comparison .)
+    COMMA           reduce using rule 23 (not_expr -> comparison .)
+
+
+state 18
+
+    (24) comparison -> arith_expr .
+    (25) comparison -> arith_expr . comp_op arith_expr
+    (31) arith_expr -> arith_expr . PLUS term
+    (32) arith_expr -> arith_expr . MINUS term
+    (26) comp_op -> . EQEQ
+    (27) comp_op -> . NEQ
+    (28) comp_op -> . LT
+    (29) comp_op -> . GT
+
+    AND             reduce using rule 24 (comparison -> arith_expr .)
+    OR              reduce using rule 24 (comparison -> arith_expr .)
+    NEWLINE         reduce using rule 24 (comparison -> arith_expr .)
+    RPAREN          reduce using rule 24 (comparison -> arith_expr .)
+    COMMA           reduce using rule 24 (comparison -> arith_expr .)
+    PLUS            shift and go to state 45
+    MINUS           shift and go to state 46
+    EQEQ            shift and go to state 47
+    NEQ             shift and go to state 48
+    LT              shift and go to state 49
+    GT              shift and go to state 50
+
+    comp_op                        shift and go to state 44
+
+state 19
+
+    (30) arith_expr -> term .
+    (34) term -> term . TIMES factor
+    (35) term -> term . DIVIDE factor
+
+    PLUS            reduce using rule 30 (arith_expr -> term .)
+    MINUS           reduce using rule 30 (arith_expr -> term .)
+    EQEQ            reduce using rule 30 (arith_expr -> term .)
+    NEQ             reduce using rule 30 (arith_expr -> term .)
+    LT              reduce using rule 30 (arith_expr -> term .)
+    GT              reduce using rule 30 (arith_expr -> term .)
+    AND             reduce using rule 30 (arith_expr -> term .)
+    OR              reduce using rule 30 (arith_expr -> term .)
+    NEWLINE         reduce using rule 30 (arith_expr -> term .)
+    RPAREN          reduce using rule 30 (arith_expr -> term .)
+    COMMA           reduce using rule 30 (arith_expr -> term .)
+    TIMES           shift and go to state 51
+    DIVIDE          shift and go to state 52
+
+
+state 20
+
+    (36) factor -> MINUS . factor
+    (36) factor -> . MINUS factor
+    (37) factor -> . atom
+    (38) atom -> . NAME
+    (39) atom -> . literal
+    (40) atom -> . LPAREN expr RPAREN
+    (41) atom -> . call
+    (50) literal -> . INT
+    (51) literal -> . FLOAT
+    (52) literal -> . STRING
+    (42) call -> . NAME LPAREN arglist_opt RPAREN
+    (43) call -> . PRINT LPAREN arglist_opt RPAREN
+    (44) call -> . LEN LPAREN arglist_opt RPAREN
+    (45) call -> . ROUND LPAREN arglist_opt RPAREN
+
+    MINUS           shift and go to state 20
+    NAME            shift and go to state 40
+    LPAREN          shift and go to state 11
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    STRING          shift and go to state 27
+    PRINT           shift and go to state 28
+    LEN             shift and go to state 29
+    ROUND           shift and go to state 30
+
+    factor                         shift and go to state 53
+    atom                           shift and go to state 22
+    literal                        shift and go to state 23
+    call                           shift and go to state 24
+
+state 21
+
+    (33) term -> factor .
+
+    TIMES           reduce using rule 33 (term -> factor .)
+    DIVIDE          reduce using rule 33 (term -> factor .)
+    PLUS            reduce using rule 33 (term -> factor .)
+    MINUS           reduce using rule 33 (term -> factor .)
+    EQEQ            reduce using rule 33 (term -> factor .)
+    NEQ             reduce using rule 33 (term -> factor .)
+    LT              reduce using rule 33 (term -> factor .)
+    GT              reduce using rule 33 (term -> factor .)
+    AND             reduce using rule 33 (term -> factor .)
+    OR              reduce using rule 33 (term -> factor .)
+    NEWLINE         reduce using rule 33 (term -> factor .)
+    RPAREN          reduce using rule 33 (term -> factor .)
+    COMMA           reduce using rule 33 (term -> factor .)
+
+
+state 22
+
+    (37) factor -> atom .
+
+    TIMES           reduce using rule 37 (factor -> atom .)
+    DIVIDE          reduce using rule 37 (factor -> atom .)
+    PLUS            reduce using rule 37 (factor -> atom .)
+    MINUS           reduce using rule 37 (factor -> atom .)
+    EQEQ            reduce using rule 37 (factor -> atom .)
+    NEQ             reduce using rule 37 (factor -> atom .)
+    LT              reduce using rule 37 (factor -> atom .)
+    GT              reduce using rule 37 (factor -> atom .)
+    AND             reduce using rule 37 (factor -> atom .)
+    OR              reduce using rule 37 (factor -> atom .)
+    NEWLINE         reduce using rule 37 (factor -> atom .)
+    RPAREN          reduce using rule 37 (factor -> atom .)
+    COMMA           reduce using rule 37 (factor -> atom .)
+
+
+state 23
+
+    (39) atom -> literal .
+
+    TIMES           reduce using rule 39 (atom -> literal .)
+    DIVIDE          reduce using rule 39 (atom -> literal .)
+    PLUS            reduce using rule 39 (atom -> literal .)
+    MINUS           reduce using rule 39 (atom -> literal .)
+    EQEQ            reduce using rule 39 (atom -> literal .)
+    NEQ             reduce using rule 39 (atom -> literal .)
+    LT              reduce using rule 39 (atom -> literal .)
+    GT              reduce using rule 39 (atom -> literal .)
+    AND             reduce using rule 39 (atom -> literal .)
+    OR              reduce using rule 39 (atom -> literal .)
+    NEWLINE         reduce using rule 39 (atom -> literal .)
+    RPAREN          reduce using rule 39 (atom -> literal .)
+    COMMA           reduce using rule 39 (atom -> literal .)
+
+
+state 24
+
+    (41) atom -> call .
+
+    TIMES           reduce using rule 41 (atom -> call .)
+    DIVIDE          reduce using rule 41 (atom -> call .)
+    PLUS            reduce using rule 41 (atom -> call .)
+    MINUS           reduce using rule 41 (atom -> call .)
+    EQEQ            reduce using rule 41 (atom -> call .)
+    NEQ             reduce using rule 41 (atom -> call .)
+    LT              reduce using rule 41 (atom -> call .)
+    GT              reduce using rule 41 (atom -> call .)
+    AND             reduce using rule 41 (atom -> call .)
+    OR              reduce using rule 41 (atom -> call .)
+    NEWLINE         reduce using rule 41 (atom -> call .)
+    RPAREN          reduce using rule 41 (atom -> call .)
+    COMMA           reduce using rule 41 (atom -> call .)
+
+
+state 25
+
+    (50) literal -> INT .
+
+    TIMES           reduce using rule 50 (literal -> INT .)
+    DIVIDE          reduce using rule 50 (literal -> INT .)
+    PLUS            reduce using rule 50 (literal -> INT .)
+    MINUS           reduce using rule 50 (literal -> INT .)
+    EQEQ            reduce using rule 50 (literal -> INT .)
+    NEQ             reduce using rule 50 (literal -> INT .)
+    LT              reduce using rule 50 (literal -> INT .)
+    GT              reduce using rule 50 (literal -> INT .)
+    AND             reduce using rule 50 (literal -> INT .)
+    OR              reduce using rule 50 (literal -> INT .)
+    NEWLINE         reduce using rule 50 (literal -> INT .)
+    RPAREN          reduce using rule 50 (literal -> INT .)
+    COMMA           reduce using rule 50 (literal -> INT .)
+
+
+state 26
+
+    (51) literal -> FLOAT .
+
+    TIMES           reduce using rule 51 (literal -> FLOAT .)
+    DIVIDE          reduce using rule 51 (literal -> FLOAT .)
+    PLUS            reduce using rule 51 (literal -> FLOAT .)
+    MINUS           reduce using rule 51 (literal -> FLOAT .)
+    EQEQ            reduce using rule 51 (literal -> FLOAT .)
+    NEQ             reduce using rule 51 (literal -> FLOAT .)
+    LT              reduce using rule 51 (literal -> FLOAT .)
+    GT              reduce using rule 51 (literal -> FLOAT .)
+    AND             reduce using rule 51 (literal -> FLOAT .)
+    OR              reduce using rule 51 (literal -> FLOAT .)
+    NEWLINE         reduce using rule 51 (literal -> FLOAT .)
+    RPAREN          reduce using rule 51 (literal -> FLOAT .)
+    COMMA           reduce using rule 51 (literal -> FLOAT .)
+
+
+state 27
+
+    (52) literal -> STRING .
+
+    TIMES           reduce using rule 52 (literal -> STRING .)
+    DIVIDE          reduce using rule 52 (literal -> STRING .)
+    PLUS            reduce using rule 52 (literal -> STRING .)
+    MINUS           reduce using rule 52 (literal -> STRING .)
+    EQEQ            reduce using rule 52 (literal -> STRING .)
+    NEQ             reduce using rule 52 (literal -> STRING .)
+    LT              reduce using rule 52 (literal -> STRING .)
+    GT              reduce using rule 52 (literal -> STRING .)
+    AND             reduce using rule 52 (literal -> STRING .)
+    OR              reduce using rule 52 (literal -> STRING .)
+    NEWLINE         reduce using rule 52 (literal -> STRING .)
+    RPAREN          reduce using rule 52 (literal -> STRING .)
+    COMMA           reduce using rule 52 (literal -> STRING .)
+
+
+state 28
+
+    (43) call -> PRINT . LPAREN arglist_opt RPAREN
+
+    LPAREN          shift and go to state 54
+
+
+state 29
+
+    (44) call -> LEN . LPAREN arglist_opt RPAREN
+
+    LPAREN          shift and go to state 55
+
+
+state 30
+
+    (45) call -> ROUND . LPAREN arglist_opt RPAREN
+
+    LPAREN          shift and go to state 56
+
+
+state 31
+
+    (2) stmt_list -> stmt_list stmt_line .
+
+    NEWLINE         reduce using rule 2 (stmt_list -> stmt_list stmt_line .)
+    DEF             reduce using rule 2 (stmt_list -> stmt_list stmt_line .)
+    NAME            reduce using rule 2 (stmt_list -> stmt_list stmt_line .)
+    NOT             reduce using rule 2 (stmt_list -> stmt_list stmt_line .)
+    MINUS           reduce using rule 2 (stmt_list -> stmt_list stmt_line .)
+    LPAREN          reduce using rule 2 (stmt_list -> stmt_list stmt_line .)
+    INT             reduce using rule 2 (stmt_list -> stmt_list stmt_line .)
+    FLOAT           reduce using rule 2 (stmt_list -> stmt_list stmt_line .)
+    STRING          reduce using rule 2 (stmt_list -> stmt_list stmt_line .)
+    PRINT           reduce using rule 2 (stmt_list -> stmt_list stmt_line .)
+    LEN             reduce using rule 2 (stmt_list -> stmt_list stmt_line .)
+    ROUND           reduce using rule 2 (stmt_list -> stmt_list stmt_line .)
+    $end            reduce using rule 2 (stmt_list -> stmt_list stmt_line .)
+
+
+state 32
+
+    (4) stmt_line -> simple_stmt NEWLINE .
+
+    NEWLINE         reduce using rule 4 (stmt_line -> simple_stmt NEWLINE .)
+    DEF             reduce using rule 4 (stmt_line -> simple_stmt NEWLINE .)
+    NAME            reduce using rule 4 (stmt_line -> simple_stmt NEWLINE .)
+    NOT             reduce using rule 4 (stmt_line -> simple_stmt NEWLINE .)
+    MINUS           reduce using rule 4 (stmt_line -> simple_stmt NEWLINE .)
+    LPAREN          reduce using rule 4 (stmt_line -> simple_stmt NEWLINE .)
+    INT             reduce using rule 4 (stmt_line -> simple_stmt NEWLINE .)
+    FLOAT           reduce using rule 4 (stmt_line -> simple_stmt NEWLINE .)
+    STRING          reduce using rule 4 (stmt_line -> simple_stmt NEWLINE .)
+    PRINT           reduce using rule 4 (stmt_line -> simple_stmt NEWLINE .)
+    LEN             reduce using rule 4 (stmt_line -> simple_stmt NEWLINE .)
+    ROUND           reduce using rule 4 (stmt_line -> simple_stmt NEWLINE .)
+    $end            reduce using rule 4 (stmt_line -> simple_stmt NEWLINE .)
+    DEDENT          reduce using rule 4 (stmt_line -> simple_stmt NEWLINE .)
+
+
+state 33
+
+    (7) funcdef -> DEF NAME . LPAREN NAME COMMA NAME RPAREN COLON NEWLINE INDENT stmt_block DEDENT
+
+    LPAREN          shift and go to state 57
+
+
+state 34
+
+    (12) assign_stmt -> NAME assign_op . expr
+    (17) expr -> . or_expr
+    (18) or_expr -> . and_expr
+    (19) or_expr -> . or_expr OR and_expr
+    (20) and_expr -> . not_expr
+    (21) and_expr -> . and_expr AND not_expr
+    (22) not_expr -> . NOT not_expr
+    (23) not_expr -> . comparison
+    (24) comparison -> . arith_expr
+    (25) comparison -> . arith_expr comp_op arith_expr
+    (30) arith_expr -> . term
+    (31) arith_expr -> . arith_expr PLUS term
+    (32) arith_expr -> . arith_expr MINUS term
+    (33) term -> . factor
+    (34) term -> . term TIMES factor
+    (35) term -> . term DIVIDE factor
+    (36) factor -> . MINUS factor
+    (37) factor -> . atom
+    (38) atom -> . NAME
+    (39) atom -> . literal
+    (40) atom -> . LPAREN expr RPAREN
+    (41) atom -> . call
+    (50) literal -> . INT
+    (51) literal -> . FLOAT
+    (52) literal -> . STRING
+    (42) call -> . NAME LPAREN arglist_opt RPAREN
+    (43) call -> . PRINT LPAREN arglist_opt RPAREN
+    (44) call -> . LEN LPAREN arglist_opt RPAREN
+    (45) call -> . ROUND LPAREN arglist_opt RPAREN
+
+    NOT             shift and go to state 16
+    MINUS           shift and go to state 20
+    NAME            shift and go to state 40
+    LPAREN          shift and go to state 11
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    STRING          shift and go to state 27
+    PRINT           shift and go to state 28
+    LEN             shift and go to state 29
+    ROUND           shift and go to state 30
+
+    expr                           shift and go to state 58
+    or_expr                        shift and go to state 13
+    and_expr                       shift and go to state 14
+    not_expr                       shift and go to state 15
+    comparison                     shift and go to state 17
+    arith_expr                     shift and go to state 18
+    term                           shift and go to state 19
+    factor                         shift and go to state 21
+    atom                           shift and go to state 22
+    literal                        shift and go to state 23
+    call                           shift and go to state 24
+
+state 35
+
+    (42) call -> NAME LPAREN . arglist_opt RPAREN
+    (46) arglist_opt -> . empty
+    (47) arglist_opt -> . arglist
+    (53) empty -> .
+    (48) arglist -> . expr
+    (49) arglist -> . arglist COMMA expr
+    (17) expr -> . or_expr
+    (18) or_expr -> . and_expr
+    (19) or_expr -> . or_expr OR and_expr
+    (20) and_expr -> . not_expr
+    (21) and_expr -> . and_expr AND not_expr
+    (22) not_expr -> . NOT not_expr
+    (23) not_expr -> . comparison
+    (24) comparison -> . arith_expr
+    (25) comparison -> . arith_expr comp_op arith_expr
+    (30) arith_expr -> . term
+    (31) arith_expr -> . arith_expr PLUS term
+    (32) arith_expr -> . arith_expr MINUS term
+    (33) term -> . factor
+    (34) term -> . term TIMES factor
+    (35) term -> . term DIVIDE factor
+    (36) factor -> . MINUS factor
+    (37) factor -> . atom
+    (38) atom -> . NAME
+    (39) atom -> . literal
+    (40) atom -> . LPAREN expr RPAREN
+    (41) atom -> . call
+    (50) literal -> . INT
+    (51) literal -> . FLOAT
+    (52) literal -> . STRING
+    (42) call -> . NAME LPAREN arglist_opt RPAREN
+    (43) call -> . PRINT LPAREN arglist_opt RPAREN
+    (44) call -> . LEN LPAREN arglist_opt RPAREN
+    (45) call -> . ROUND LPAREN arglist_opt RPAREN
+
+    RPAREN          reduce using rule 53 (empty -> .)
+    NOT             shift and go to state 16
+    MINUS           shift and go to state 20
+    NAME            shift and go to state 40
+    LPAREN          shift and go to state 11
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    STRING          shift and go to state 27
+    PRINT           shift and go to state 28
+    LEN             shift and go to state 29
+    ROUND           shift and go to state 30
+
+    arglist_opt                    shift and go to state 59
+    empty                          shift and go to state 60
+    arglist                        shift and go to state 61
+    expr                           shift and go to state 62
+    or_expr                        shift and go to state 13
+    and_expr                       shift and go to state 14
+    not_expr                       shift and go to state 15
+    comparison                     shift and go to state 17
+    arith_expr                     shift and go to state 18
+    term                           shift and go to state 19
+    factor                         shift and go to state 21
+    atom                           shift and go to state 22
+    literal                        shift and go to state 23
+    call                           shift and go to state 24
+
+state 36
+
+    (13) assign_op -> EQUAL .
+
+    NOT             reduce using rule 13 (assign_op -> EQUAL .)
+    MINUS           reduce using rule 13 (assign_op -> EQUAL .)
+    NAME            reduce using rule 13 (assign_op -> EQUAL .)
+    LPAREN          reduce using rule 13 (assign_op -> EQUAL .)
+    INT             reduce using rule 13 (assign_op -> EQUAL .)
+    FLOAT           reduce using rule 13 (assign_op -> EQUAL .)
+    STRING          reduce using rule 13 (assign_op -> EQUAL .)
+    PRINT           reduce using rule 13 (assign_op -> EQUAL .)
+    LEN             reduce using rule 13 (assign_op -> EQUAL .)
+    ROUND           reduce using rule 13 (assign_op -> EQUAL .)
+
+
+state 37
+
+    (14) assign_op -> PLUSEQ .
+
+    NOT             reduce using rule 14 (assign_op -> PLUSEQ .)
+    MINUS           reduce using rule 14 (assign_op -> PLUSEQ .)
+    NAME            reduce using rule 14 (assign_op -> PLUSEQ .)
+    LPAREN          reduce using rule 14 (assign_op -> PLUSEQ .)
+    INT             reduce using rule 14 (assign_op -> PLUSEQ .)
+    FLOAT           reduce using rule 14 (assign_op -> PLUSEQ .)
+    STRING          reduce using rule 14 (assign_op -> PLUSEQ .)
+    PRINT           reduce using rule 14 (assign_op -> PLUSEQ .)
+    LEN             reduce using rule 14 (assign_op -> PLUSEQ .)
+    ROUND           reduce using rule 14 (assign_op -> PLUSEQ .)
+
+
+state 38
+
+    (15) assign_op -> MINUSEQ .
+
+    NOT             reduce using rule 15 (assign_op -> MINUSEQ .)
+    MINUS           reduce using rule 15 (assign_op -> MINUSEQ .)
+    NAME            reduce using rule 15 (assign_op -> MINUSEQ .)
+    LPAREN          reduce using rule 15 (assign_op -> MINUSEQ .)
+    INT             reduce using rule 15 (assign_op -> MINUSEQ .)
+    FLOAT           reduce using rule 15 (assign_op -> MINUSEQ .)
+    STRING          reduce using rule 15 (assign_op -> MINUSEQ .)
+    PRINT           reduce using rule 15 (assign_op -> MINUSEQ .)
+    LEN             reduce using rule 15 (assign_op -> MINUSEQ .)
+    ROUND           reduce using rule 15 (assign_op -> MINUSEQ .)
+
+
+state 39
+
+    (40) atom -> LPAREN expr . RPAREN
+
+    RPAREN          shift and go to state 63
+
+
+state 40
+
+    (38) atom -> NAME .
+    (42) call -> NAME . LPAREN arglist_opt RPAREN
+
+    TIMES           reduce using rule 38 (atom -> NAME .)
+    DIVIDE          reduce using rule 38 (atom -> NAME .)
+    PLUS            reduce using rule 38 (atom -> NAME .)
+    MINUS           reduce using rule 38 (atom -> NAME .)
+    EQEQ            reduce using rule 38 (atom -> NAME .)
+    NEQ             reduce using rule 38 (atom -> NAME .)
+    LT              reduce using rule 38 (atom -> NAME .)
+    GT              reduce using rule 38 (atom -> NAME .)
+    AND             reduce using rule 38 (atom -> NAME .)
+    OR              reduce using rule 38 (atom -> NAME .)
+    RPAREN          reduce using rule 38 (atom -> NAME .)
+    NEWLINE         reduce using rule 38 (atom -> NAME .)
+    COMMA           reduce using rule 38 (atom -> NAME .)
+    LPAREN          shift and go to state 35
+
+
+state 41
+
+    (19) or_expr -> or_expr OR . and_expr
+    (20) and_expr -> . not_expr
+    (21) and_expr -> . and_expr AND not_expr
+    (22) not_expr -> . NOT not_expr
+    (23) not_expr -> . comparison
+    (24) comparison -> . arith_expr
+    (25) comparison -> . arith_expr comp_op arith_expr
+    (30) arith_expr -> . term
+    (31) arith_expr -> . arith_expr PLUS term
+    (32) arith_expr -> . arith_expr MINUS term
+    (33) term -> . factor
+    (34) term -> . term TIMES factor
+    (35) term -> . term DIVIDE factor
+    (36) factor -> . MINUS factor
+    (37) factor -> . atom
+    (38) atom -> . NAME
+    (39) atom -> . literal
+    (40) atom -> . LPAREN expr RPAREN
+    (41) atom -> . call
+    (50) literal -> . INT
+    (51) literal -> . FLOAT
+    (52) literal -> . STRING
+    (42) call -> . NAME LPAREN arglist_opt RPAREN
+    (43) call -> . PRINT LPAREN arglist_opt RPAREN
+    (44) call -> . LEN LPAREN arglist_opt RPAREN
+    (45) call -> . ROUND LPAREN arglist_opt RPAREN
+
+    NOT             shift and go to state 16
+    MINUS           shift and go to state 20
+    NAME            shift and go to state 40
+    LPAREN          shift and go to state 11
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    STRING          shift and go to state 27
+    PRINT           shift and go to state 28
+    LEN             shift and go to state 29
+    ROUND           shift and go to state 30
+
+    and_expr                       shift and go to state 64
+    not_expr                       shift and go to state 15
+    comparison                     shift and go to state 17
+    arith_expr                     shift and go to state 18
+    term                           shift and go to state 19
+    factor                         shift and go to state 21
+    atom                           shift and go to state 22
+    literal                        shift and go to state 23
+    call                           shift and go to state 24
+
+state 42
+
+    (21) and_expr -> and_expr AND . not_expr
+    (22) not_expr -> . NOT not_expr
+    (23) not_expr -> . comparison
+    (24) comparison -> . arith_expr
+    (25) comparison -> . arith_expr comp_op arith_expr
+    (30) arith_expr -> . term
+    (31) arith_expr -> . arith_expr PLUS term
+    (32) arith_expr -> . arith_expr MINUS term
+    (33) term -> . factor
+    (34) term -> . term TIMES factor
+    (35) term -> . term DIVIDE factor
+    (36) factor -> . MINUS factor
+    (37) factor -> . atom
+    (38) atom -> . NAME
+    (39) atom -> . literal
+    (40) atom -> . LPAREN expr RPAREN
+    (41) atom -> . call
+    (50) literal -> . INT
+    (51) literal -> . FLOAT
+    (52) literal -> . STRING
+    (42) call -> . NAME LPAREN arglist_opt RPAREN
+    (43) call -> . PRINT LPAREN arglist_opt RPAREN
+    (44) call -> . LEN LPAREN arglist_opt RPAREN
+    (45) call -> . ROUND LPAREN arglist_opt RPAREN
+
+    NOT             shift and go to state 16
+    MINUS           shift and go to state 20
+    NAME            shift and go to state 40
+    LPAREN          shift and go to state 11
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    STRING          shift and go to state 27
+    PRINT           shift and go to state 28
+    LEN             shift and go to state 29
+    ROUND           shift and go to state 30
+
+    not_expr                       shift and go to state 65
+    comparison                     shift and go to state 17
+    arith_expr                     shift and go to state 18
+    term                           shift and go to state 19
+    factor                         shift and go to state 21
+    atom                           shift and go to state 22
+    literal                        shift and go to state 23
+    call                           shift and go to state 24
+
+state 43
+
+    (22) not_expr -> NOT not_expr .
+
+    AND             reduce using rule 22 (not_expr -> NOT not_expr .)
+    OR              reduce using rule 22 (not_expr -> NOT not_expr .)
+    NEWLINE         reduce using rule 22 (not_expr -> NOT not_expr .)
+    RPAREN          reduce using rule 22 (not_expr -> NOT not_expr .)
+    COMMA           reduce using rule 22 (not_expr -> NOT not_expr .)
+
+
+state 44
+
+    (25) comparison -> arith_expr comp_op . arith_expr
+    (30) arith_expr -> . term
+    (31) arith_expr -> . arith_expr PLUS term
+    (32) arith_expr -> . arith_expr MINUS term
+    (33) term -> . factor
+    (34) term -> . term TIMES factor
+    (35) term -> . term DIVIDE factor
+    (36) factor -> . MINUS factor
+    (37) factor -> . atom
+    (38) atom -> . NAME
+    (39) atom -> . literal
+    (40) atom -> . LPAREN expr RPAREN
+    (41) atom -> . call
+    (50) literal -> . INT
+    (51) literal -> . FLOAT
+    (52) literal -> . STRING
+    (42) call -> . NAME LPAREN arglist_opt RPAREN
+    (43) call -> . PRINT LPAREN arglist_opt RPAREN
+    (44) call -> . LEN LPAREN arglist_opt RPAREN
+    (45) call -> . ROUND LPAREN arglist_opt RPAREN
+
+    MINUS           shift and go to state 20
+    NAME            shift and go to state 40
+    LPAREN          shift and go to state 11
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    STRING          shift and go to state 27
+    PRINT           shift and go to state 28
+    LEN             shift and go to state 29
+    ROUND           shift and go to state 30
+
+    arith_expr                     shift and go to state 66
+    term                           shift and go to state 19
+    factor                         shift and go to state 21
+    atom                           shift and go to state 22
+    literal                        shift and go to state 23
+    call                           shift and go to state 24
+
+state 45
+
+    (31) arith_expr -> arith_expr PLUS . term
+    (33) term -> . factor
+    (34) term -> . term TIMES factor
+    (35) term -> . term DIVIDE factor
+    (36) factor -> . MINUS factor
+    (37) factor -> . atom
+    (38) atom -> . NAME
+    (39) atom -> . literal
+    (40) atom -> . LPAREN expr RPAREN
+    (41) atom -> . call
+    (50) literal -> . INT
+    (51) literal -> . FLOAT
+    (52) literal -> . STRING
+    (42) call -> . NAME LPAREN arglist_opt RPAREN
+    (43) call -> . PRINT LPAREN arglist_opt RPAREN
+    (44) call -> . LEN LPAREN arglist_opt RPAREN
+    (45) call -> . ROUND LPAREN arglist_opt RPAREN
+
+    MINUS           shift and go to state 20
+    NAME            shift and go to state 40
+    LPAREN          shift and go to state 11
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    STRING          shift and go to state 27
+    PRINT           shift and go to state 28
+    LEN             shift and go to state 29
+    ROUND           shift and go to state 30
+
+    term                           shift and go to state 67
+    factor                         shift and go to state 21
+    atom                           shift and go to state 22
+    literal                        shift and go to state 23
+    call                           shift and go to state 24
+
+state 46
+
+    (32) arith_expr -> arith_expr MINUS . term
+    (33) term -> . factor
+    (34) term -> . term TIMES factor
+    (35) term -> . term DIVIDE factor
+    (36) factor -> . MINUS factor
+    (37) factor -> . atom
+    (38) atom -> . NAME
+    (39) atom -> . literal
+    (40) atom -> . LPAREN expr RPAREN
+    (41) atom -> . call
+    (50) literal -> . INT
+    (51) literal -> . FLOAT
+    (52) literal -> . STRING
+    (42) call -> . NAME LPAREN arglist_opt RPAREN
+    (43) call -> . PRINT LPAREN arglist_opt RPAREN
+    (44) call -> . LEN LPAREN arglist_opt RPAREN
+    (45) call -> . ROUND LPAREN arglist_opt RPAREN
+
+    MINUS           shift and go to state 20
+    NAME            shift and go to state 40
+    LPAREN          shift and go to state 11
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    STRING          shift and go to state 27
+    PRINT           shift and go to state 28
+    LEN             shift and go to state 29
+    ROUND           shift and go to state 30
+
+    term                           shift and go to state 68
+    factor                         shift and go to state 21
+    atom                           shift and go to state 22
+    literal                        shift and go to state 23
+    call                           shift and go to state 24
+
+state 47
+
+    (26) comp_op -> EQEQ .
+
+    MINUS           reduce using rule 26 (comp_op -> EQEQ .)
+    NAME            reduce using rule 26 (comp_op -> EQEQ .)
+    LPAREN          reduce using rule 26 (comp_op -> EQEQ .)
+    INT             reduce using rule 26 (comp_op -> EQEQ .)
+    FLOAT           reduce using rule 26 (comp_op -> EQEQ .)
+    STRING          reduce using rule 26 (comp_op -> EQEQ .)
+    PRINT           reduce using rule 26 (comp_op -> EQEQ .)
+    LEN             reduce using rule 26 (comp_op -> EQEQ .)
+    ROUND           reduce using rule 26 (comp_op -> EQEQ .)
+
+
+state 48
+
+    (27) comp_op -> NEQ .
+
+    MINUS           reduce using rule 27 (comp_op -> NEQ .)
+    NAME            reduce using rule 27 (comp_op -> NEQ .)
+    LPAREN          reduce using rule 27 (comp_op -> NEQ .)
+    INT             reduce using rule 27 (comp_op -> NEQ .)
+    FLOAT           reduce using rule 27 (comp_op -> NEQ .)
+    STRING          reduce using rule 27 (comp_op -> NEQ .)
+    PRINT           reduce using rule 27 (comp_op -> NEQ .)
+    LEN             reduce using rule 27 (comp_op -> NEQ .)
+    ROUND           reduce using rule 27 (comp_op -> NEQ .)
+
+
+state 49
+
+    (28) comp_op -> LT .
+
+    MINUS           reduce using rule 28 (comp_op -> LT .)
+    NAME            reduce using rule 28 (comp_op -> LT .)
+    LPAREN          reduce using rule 28 (comp_op -> LT .)
+    INT             reduce using rule 28 (comp_op -> LT .)
+    FLOAT           reduce using rule 28 (comp_op -> LT .)
+    STRING          reduce using rule 28 (comp_op -> LT .)
+    PRINT           reduce using rule 28 (comp_op -> LT .)
+    LEN             reduce using rule 28 (comp_op -> LT .)
+    ROUND           reduce using rule 28 (comp_op -> LT .)
+
+
+state 50
+
+    (29) comp_op -> GT .
+
+    MINUS           reduce using rule 29 (comp_op -> GT .)
+    NAME            reduce using rule 29 (comp_op -> GT .)
+    LPAREN          reduce using rule 29 (comp_op -> GT .)
+    INT             reduce using rule 29 (comp_op -> GT .)
+    FLOAT           reduce using rule 29 (comp_op -> GT .)
+    STRING          reduce using rule 29 (comp_op -> GT .)
+    PRINT           reduce using rule 29 (comp_op -> GT .)
+    LEN             reduce using rule 29 (comp_op -> GT .)
+    ROUND           reduce using rule 29 (comp_op -> GT .)
+
+
+state 51
+
+    (34) term -> term TIMES . factor
+    (36) factor -> . MINUS factor
+    (37) factor -> . atom
+    (38) atom -> . NAME
+    (39) atom -> . literal
+    (40) atom -> . LPAREN expr RPAREN
+    (41) atom -> . call
+    (50) literal -> . INT
+    (51) literal -> . FLOAT
+    (52) literal -> . STRING
+    (42) call -> . NAME LPAREN arglist_opt RPAREN
+    (43) call -> . PRINT LPAREN arglist_opt RPAREN
+    (44) call -> . LEN LPAREN arglist_opt RPAREN
+    (45) call -> . ROUND LPAREN arglist_opt RPAREN
+
+    MINUS           shift and go to state 20
+    NAME            shift and go to state 40
+    LPAREN          shift and go to state 11
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    STRING          shift and go to state 27
+    PRINT           shift and go to state 28
+    LEN             shift and go to state 29
+    ROUND           shift and go to state 30
+
+    factor                         shift and go to state 69
+    atom                           shift and go to state 22
+    literal                        shift and go to state 23
+    call                           shift and go to state 24
+
+state 52
+
+    (35) term -> term DIVIDE . factor
+    (36) factor -> . MINUS factor
+    (37) factor -> . atom
+    (38) atom -> . NAME
+    (39) atom -> . literal
+    (40) atom -> . LPAREN expr RPAREN
+    (41) atom -> . call
+    (50) literal -> . INT
+    (51) literal -> . FLOAT
+    (52) literal -> . STRING
+    (42) call -> . NAME LPAREN arglist_opt RPAREN
+    (43) call -> . PRINT LPAREN arglist_opt RPAREN
+    (44) call -> . LEN LPAREN arglist_opt RPAREN
+    (45) call -> . ROUND LPAREN arglist_opt RPAREN
+
+    MINUS           shift and go to state 20
+    NAME            shift and go to state 40
+    LPAREN          shift and go to state 11
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    STRING          shift and go to state 27
+    PRINT           shift and go to state 28
+    LEN             shift and go to state 29
+    ROUND           shift and go to state 30
+
+    factor                         shift and go to state 70
+    atom                           shift and go to state 22
+    literal                        shift and go to state 23
+    call                           shift and go to state 24
+
+state 53
+
+    (36) factor -> MINUS factor .
+
+    TIMES           reduce using rule 36 (factor -> MINUS factor .)
+    DIVIDE          reduce using rule 36 (factor -> MINUS factor .)
+    PLUS            reduce using rule 36 (factor -> MINUS factor .)
+    MINUS           reduce using rule 36 (factor -> MINUS factor .)
+    EQEQ            reduce using rule 36 (factor -> MINUS factor .)
+    NEQ             reduce using rule 36 (factor -> MINUS factor .)
+    LT              reduce using rule 36 (factor -> MINUS factor .)
+    GT              reduce using rule 36 (factor -> MINUS factor .)
+    AND             reduce using rule 36 (factor -> MINUS factor .)
+    OR              reduce using rule 36 (factor -> MINUS factor .)
+    NEWLINE         reduce using rule 36 (factor -> MINUS factor .)
+    RPAREN          reduce using rule 36 (factor -> MINUS factor .)
+    COMMA           reduce using rule 36 (factor -> MINUS factor .)
+
+
+state 54
+
+    (43) call -> PRINT LPAREN . arglist_opt RPAREN
+    (46) arglist_opt -> . empty
+    (47) arglist_opt -> . arglist
+    (53) empty -> .
+    (48) arglist -> . expr
+    (49) arglist -> . arglist COMMA expr
+    (17) expr -> . or_expr
+    (18) or_expr -> . and_expr
+    (19) or_expr -> . or_expr OR and_expr
+    (20) and_expr -> . not_expr
+    (21) and_expr -> . and_expr AND not_expr
+    (22) not_expr -> . NOT not_expr
+    (23) not_expr -> . comparison
+    (24) comparison -> . arith_expr
+    (25) comparison -> . arith_expr comp_op arith_expr
+    (30) arith_expr -> . term
+    (31) arith_expr -> . arith_expr PLUS term
+    (32) arith_expr -> . arith_expr MINUS term
+    (33) term -> . factor
+    (34) term -> . term TIMES factor
+    (35) term -> . term DIVIDE factor
+    (36) factor -> . MINUS factor
+    (37) factor -> . atom
+    (38) atom -> . NAME
+    (39) atom -> . literal
+    (40) atom -> . LPAREN expr RPAREN
+    (41) atom -> . call
+    (50) literal -> . INT
+    (51) literal -> . FLOAT
+    (52) literal -> . STRING
+    (42) call -> . NAME LPAREN arglist_opt RPAREN
+    (43) call -> . PRINT LPAREN arglist_opt RPAREN
+    (44) call -> . LEN LPAREN arglist_opt RPAREN
+    (45) call -> . ROUND LPAREN arglist_opt RPAREN
+
+    RPAREN          reduce using rule 53 (empty -> .)
+    NOT             shift and go to state 16
+    MINUS           shift and go to state 20
+    NAME            shift and go to state 40
+    LPAREN          shift and go to state 11
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    STRING          shift and go to state 27
+    PRINT           shift and go to state 28
+    LEN             shift and go to state 29
+    ROUND           shift and go to state 30
+
+    arglist_opt                    shift and go to state 71
+    empty                          shift and go to state 60
+    arglist                        shift and go to state 61
+    expr                           shift and go to state 62
+    or_expr                        shift and go to state 13
+    and_expr                       shift and go to state 14
+    not_expr                       shift and go to state 15
+    comparison                     shift and go to state 17
+    arith_expr                     shift and go to state 18
+    term                           shift and go to state 19
+    factor                         shift and go to state 21
+    atom                           shift and go to state 22
+    literal                        shift and go to state 23
+    call                           shift and go to state 24
+
+state 55
+
+    (44) call -> LEN LPAREN . arglist_opt RPAREN
+    (46) arglist_opt -> . empty
+    (47) arglist_opt -> . arglist
+    (53) empty -> .
+    (48) arglist -> . expr
+    (49) arglist -> . arglist COMMA expr
+    (17) expr -> . or_expr
+    (18) or_expr -> . and_expr
+    (19) or_expr -> . or_expr OR and_expr
+    (20) and_expr -> . not_expr
+    (21) and_expr -> . and_expr AND not_expr
+    (22) not_expr -> . NOT not_expr
+    (23) not_expr -> . comparison
+    (24) comparison -> . arith_expr
+    (25) comparison -> . arith_expr comp_op arith_expr
+    (30) arith_expr -> . term
+    (31) arith_expr -> . arith_expr PLUS term
+    (32) arith_expr -> . arith_expr MINUS term
+    (33) term -> . factor
+    (34) term -> . term TIMES factor
+    (35) term -> . term DIVIDE factor
+    (36) factor -> . MINUS factor
+    (37) factor -> . atom
+    (38) atom -> . NAME
+    (39) atom -> . literal
+    (40) atom -> . LPAREN expr RPAREN
+    (41) atom -> . call
+    (50) literal -> . INT
+    (51) literal -> . FLOAT
+    (52) literal -> . STRING
+    (42) call -> . NAME LPAREN arglist_opt RPAREN
+    (43) call -> . PRINT LPAREN arglist_opt RPAREN
+    (44) call -> . LEN LPAREN arglist_opt RPAREN
+    (45) call -> . ROUND LPAREN arglist_opt RPAREN
+
+    RPAREN          reduce using rule 53 (empty -> .)
+    NOT             shift and go to state 16
+    MINUS           shift and go to state 20
+    NAME            shift and go to state 40
+    LPAREN          shift and go to state 11
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    STRING          shift and go to state 27
+    PRINT           shift and go to state 28
+    LEN             shift and go to state 29
+    ROUND           shift and go to state 30
+
+    arglist_opt                    shift and go to state 72
+    empty                          shift and go to state 60
+    arglist                        shift and go to state 61
+    expr                           shift and go to state 62
+    or_expr                        shift and go to state 13
+    and_expr                       shift and go to state 14
+    not_expr                       shift and go to state 15
+    comparison                     shift and go to state 17
+    arith_expr                     shift and go to state 18
+    term                           shift and go to state 19
+    factor                         shift and go to state 21
+    atom                           shift and go to state 22
+    literal                        shift and go to state 23
+    call                           shift and go to state 24
+
+state 56
+
+    (45) call -> ROUND LPAREN . arglist_opt RPAREN
+    (46) arglist_opt -> . empty
+    (47) arglist_opt -> . arglist
+    (53) empty -> .
+    (48) arglist -> . expr
+    (49) arglist -> . arglist COMMA expr
+    (17) expr -> . or_expr
+    (18) or_expr -> . and_expr
+    (19) or_expr -> . or_expr OR and_expr
+    (20) and_expr -> . not_expr
+    (21) and_expr -> . and_expr AND not_expr
+    (22) not_expr -> . NOT not_expr
+    (23) not_expr -> . comparison
+    (24) comparison -> . arith_expr
+    (25) comparison -> . arith_expr comp_op arith_expr
+    (30) arith_expr -> . term
+    (31) arith_expr -> . arith_expr PLUS term
+    (32) arith_expr -> . arith_expr MINUS term
+    (33) term -> . factor
+    (34) term -> . term TIMES factor
+    (35) term -> . term DIVIDE factor
+    (36) factor -> . MINUS factor
+    (37) factor -> . atom
+    (38) atom -> . NAME
+    (39) atom -> . literal
+    (40) atom -> . LPAREN expr RPAREN
+    (41) atom -> . call
+    (50) literal -> . INT
+    (51) literal -> . FLOAT
+    (52) literal -> . STRING
+    (42) call -> . NAME LPAREN arglist_opt RPAREN
+    (43) call -> . PRINT LPAREN arglist_opt RPAREN
+    (44) call -> . LEN LPAREN arglist_opt RPAREN
+    (45) call -> . ROUND LPAREN arglist_opt RPAREN
+
+    RPAREN          reduce using rule 53 (empty -> .)
+    NOT             shift and go to state 16
+    MINUS           shift and go to state 20
+    NAME            shift and go to state 40
+    LPAREN          shift and go to state 11
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    STRING          shift and go to state 27
+    PRINT           shift and go to state 28
+    LEN             shift and go to state 29
+    ROUND           shift and go to state 30
+
+    arglist_opt                    shift and go to state 73
+    empty                          shift and go to state 60
+    arglist                        shift and go to state 61
+    expr                           shift and go to state 62
+    or_expr                        shift and go to state 13
+    and_expr                       shift and go to state 14
+    not_expr                       shift and go to state 15
+    comparison                     shift and go to state 17
+    arith_expr                     shift and go to state 18
+    term                           shift and go to state 19
+    factor                         shift and go to state 21
+    atom                           shift and go to state 22
+    literal                        shift and go to state 23
+    call                           shift and go to state 24
+
+state 57
+
+    (7) funcdef -> DEF NAME LPAREN . NAME COMMA NAME RPAREN COLON NEWLINE INDENT stmt_block DEDENT
+
+    NAME            shift and go to state 74
+
+
+state 58
+
+    (12) assign_stmt -> NAME assign_op expr .
+
+    NEWLINE         reduce using rule 12 (assign_stmt -> NAME assign_op expr .)
+
+
+state 59
+
+    (42) call -> NAME LPAREN arglist_opt . RPAREN
+
+    RPAREN          shift and go to state 75
+
+
+state 60
+
+    (46) arglist_opt -> empty .
+
+    RPAREN          reduce using rule 46 (arglist_opt -> empty .)
+
+
+state 61
+
+    (47) arglist_opt -> arglist .
+    (49) arglist -> arglist . COMMA expr
+
+    RPAREN          reduce using rule 47 (arglist_opt -> arglist .)
+    COMMA           shift and go to state 76
+
+
+state 62
+
+    (48) arglist -> expr .
+
+    COMMA           reduce using rule 48 (arglist -> expr .)
+    RPAREN          reduce using rule 48 (arglist -> expr .)
+
+
+state 63
+
+    (40) atom -> LPAREN expr RPAREN .
+
+    TIMES           reduce using rule 40 (atom -> LPAREN expr RPAREN .)
+    DIVIDE          reduce using rule 40 (atom -> LPAREN expr RPAREN .)
+    PLUS            reduce using rule 40 (atom -> LPAREN expr RPAREN .)
+    MINUS           reduce using rule 40 (atom -> LPAREN expr RPAREN .)
+    EQEQ            reduce using rule 40 (atom -> LPAREN expr RPAREN .)
+    NEQ             reduce using rule 40 (atom -> LPAREN expr RPAREN .)
+    LT              reduce using rule 40 (atom -> LPAREN expr RPAREN .)
+    GT              reduce using rule 40 (atom -> LPAREN expr RPAREN .)
+    AND             reduce using rule 40 (atom -> LPAREN expr RPAREN .)
+    OR              reduce using rule 40 (atom -> LPAREN expr RPAREN .)
+    NEWLINE         reduce using rule 40 (atom -> LPAREN expr RPAREN .)
+    RPAREN          reduce using rule 40 (atom -> LPAREN expr RPAREN .)
+    COMMA           reduce using rule 40 (atom -> LPAREN expr RPAREN .)
+
+
+state 64
+
+    (19) or_expr -> or_expr OR and_expr .
+    (21) and_expr -> and_expr . AND not_expr
+
+    OR              reduce using rule 19 (or_expr -> or_expr OR and_expr .)
+    NEWLINE         reduce using rule 19 (or_expr -> or_expr OR and_expr .)
+    RPAREN          reduce using rule 19 (or_expr -> or_expr OR and_expr .)
+    COMMA           reduce using rule 19 (or_expr -> or_expr OR and_expr .)
+    AND             shift and go to state 42
+
+
+state 65
+
+    (21) and_expr -> and_expr AND not_expr .
+
+    AND             reduce using rule 21 (and_expr -> and_expr AND not_expr .)
+    OR              reduce using rule 21 (and_expr -> and_expr AND not_expr .)
+    NEWLINE         reduce using rule 21 (and_expr -> and_expr AND not_expr .)
+    RPAREN          reduce using rule 21 (and_expr -> and_expr AND not_expr .)
+    COMMA           reduce using rule 21 (and_expr -> and_expr AND not_expr .)
+
+
+state 66
+
+    (25) comparison -> arith_expr comp_op arith_expr .
+    (31) arith_expr -> arith_expr . PLUS term
+    (32) arith_expr -> arith_expr . MINUS term
+
+    AND             reduce using rule 25 (comparison -> arith_expr comp_op arith_expr .)
+    OR              reduce using rule 25 (comparison -> arith_expr comp_op arith_expr .)
+    NEWLINE         reduce using rule 25 (comparison -> arith_expr comp_op arith_expr .)
+    RPAREN          reduce using rule 25 (comparison -> arith_expr comp_op arith_expr .)
+    COMMA           reduce using rule 25 (comparison -> arith_expr comp_op arith_expr .)
+    PLUS            shift and go to state 45
+    MINUS           shift and go to state 46
+
+
+state 67
+
+    (31) arith_expr -> arith_expr PLUS term .
+    (34) term -> term . TIMES factor
+    (35) term -> term . DIVIDE factor
+
+    PLUS            reduce using rule 31 (arith_expr -> arith_expr PLUS term .)
+    MINUS           reduce using rule 31 (arith_expr -> arith_expr PLUS term .)
+    EQEQ            reduce using rule 31 (arith_expr -> arith_expr PLUS term .)
+    NEQ             reduce using rule 31 (arith_expr -> arith_expr PLUS term .)
+    LT              reduce using rule 31 (arith_expr -> arith_expr PLUS term .)
+    GT              reduce using rule 31 (arith_expr -> arith_expr PLUS term .)
+    AND             reduce using rule 31 (arith_expr -> arith_expr PLUS term .)
+    OR              reduce using rule 31 (arith_expr -> arith_expr PLUS term .)
+    NEWLINE         reduce using rule 31 (arith_expr -> arith_expr PLUS term .)
+    RPAREN          reduce using rule 31 (arith_expr -> arith_expr PLUS term .)
+    COMMA           reduce using rule 31 (arith_expr -> arith_expr PLUS term .)
+    TIMES           shift and go to state 51
+    DIVIDE          shift and go to state 52
+
+
+state 68
+
+    (32) arith_expr -> arith_expr MINUS term .
+    (34) term -> term . TIMES factor
+    (35) term -> term . DIVIDE factor
+
+    PLUS            reduce using rule 32 (arith_expr -> arith_expr MINUS term .)
+    MINUS           reduce using rule 32 (arith_expr -> arith_expr MINUS term .)
+    EQEQ            reduce using rule 32 (arith_expr -> arith_expr MINUS term .)
+    NEQ             reduce using rule 32 (arith_expr -> arith_expr MINUS term .)
+    LT              reduce using rule 32 (arith_expr -> arith_expr MINUS term .)
+    GT              reduce using rule 32 (arith_expr -> arith_expr MINUS term .)
+    AND             reduce using rule 32 (arith_expr -> arith_expr MINUS term .)
+    OR              reduce using rule 32 (arith_expr -> arith_expr MINUS term .)
+    NEWLINE         reduce using rule 32 (arith_expr -> arith_expr MINUS term .)
+    RPAREN          reduce using rule 32 (arith_expr -> arith_expr MINUS term .)
+    COMMA           reduce using rule 32 (arith_expr -> arith_expr MINUS term .)
+    TIMES           shift and go to state 51
+    DIVIDE          shift and go to state 52
+
+
+state 69
+
+    (34) term -> term TIMES factor .
+
+    TIMES           reduce using rule 34 (term -> term TIMES factor .)
+    DIVIDE          reduce using rule 34 (term -> term TIMES factor .)
+    PLUS            reduce using rule 34 (term -> term TIMES factor .)
+    MINUS           reduce using rule 34 (term -> term TIMES factor .)
+    EQEQ            reduce using rule 34 (term -> term TIMES factor .)
+    NEQ             reduce using rule 34 (term -> term TIMES factor .)
+    LT              reduce using rule 34 (term -> term TIMES factor .)
+    GT              reduce using rule 34 (term -> term TIMES factor .)
+    AND             reduce using rule 34 (term -> term TIMES factor .)
+    OR              reduce using rule 34 (term -> term TIMES factor .)
+    NEWLINE         reduce using rule 34 (term -> term TIMES factor .)
+    RPAREN          reduce using rule 34 (term -> term TIMES factor .)
+    COMMA           reduce using rule 34 (term -> term TIMES factor .)
+
+
+state 70
+
+    (35) term -> term DIVIDE factor .
+
+    TIMES           reduce using rule 35 (term -> term DIVIDE factor .)
+    DIVIDE          reduce using rule 35 (term -> term DIVIDE factor .)
+    PLUS            reduce using rule 35 (term -> term DIVIDE factor .)
+    MINUS           reduce using rule 35 (term -> term DIVIDE factor .)
+    EQEQ            reduce using rule 35 (term -> term DIVIDE factor .)
+    NEQ             reduce using rule 35 (term -> term DIVIDE factor .)
+    LT              reduce using rule 35 (term -> term DIVIDE factor .)
+    GT              reduce using rule 35 (term -> term DIVIDE factor .)
+    AND             reduce using rule 35 (term -> term DIVIDE factor .)
+    OR              reduce using rule 35 (term -> term DIVIDE factor .)
+    NEWLINE         reduce using rule 35 (term -> term DIVIDE factor .)
+    RPAREN          reduce using rule 35 (term -> term DIVIDE factor .)
+    COMMA           reduce using rule 35 (term -> term DIVIDE factor .)
+
+
+state 71
+
+    (43) call -> PRINT LPAREN arglist_opt . RPAREN
+
+    RPAREN          shift and go to state 77
+
+
+state 72
+
+    (44) call -> LEN LPAREN arglist_opt . RPAREN
+
+    RPAREN          shift and go to state 78
+
+
+state 73
+
+    (45) call -> ROUND LPAREN arglist_opt . RPAREN
+
+    RPAREN          shift and go to state 79
+
+
+state 74
+
+    (7) funcdef -> DEF NAME LPAREN NAME . COMMA NAME RPAREN COLON NEWLINE INDENT stmt_block DEDENT
+
+    COMMA           shift and go to state 80
+
+
+state 75
+
+    (42) call -> NAME LPAREN arglist_opt RPAREN .
+
+    TIMES           reduce using rule 42 (call -> NAME LPAREN arglist_opt RPAREN .)
+    DIVIDE          reduce using rule 42 (call -> NAME LPAREN arglist_opt RPAREN .)
+    PLUS            reduce using rule 42 (call -> NAME LPAREN arglist_opt RPAREN .)
+    MINUS           reduce using rule 42 (call -> NAME LPAREN arglist_opt RPAREN .)
+    EQEQ            reduce using rule 42 (call -> NAME LPAREN arglist_opt RPAREN .)
+    NEQ             reduce using rule 42 (call -> NAME LPAREN arglist_opt RPAREN .)
+    LT              reduce using rule 42 (call -> NAME LPAREN arglist_opt RPAREN .)
+    GT              reduce using rule 42 (call -> NAME LPAREN arglist_opt RPAREN .)
+    AND             reduce using rule 42 (call -> NAME LPAREN arglist_opt RPAREN .)
+    OR              reduce using rule 42 (call -> NAME LPAREN arglist_opt RPAREN .)
+    NEWLINE         reduce using rule 42 (call -> NAME LPAREN arglist_opt RPAREN .)
+    RPAREN          reduce using rule 42 (call -> NAME LPAREN arglist_opt RPAREN .)
+    COMMA           reduce using rule 42 (call -> NAME LPAREN arglist_opt RPAREN .)
+
+
+state 76
+
+    (49) arglist -> arglist COMMA . expr
+    (17) expr -> . or_expr
+    (18) or_expr -> . and_expr
+    (19) or_expr -> . or_expr OR and_expr
+    (20) and_expr -> . not_expr
+    (21) and_expr -> . and_expr AND not_expr
+    (22) not_expr -> . NOT not_expr
+    (23) not_expr -> . comparison
+    (24) comparison -> . arith_expr
+    (25) comparison -> . arith_expr comp_op arith_expr
+    (30) arith_expr -> . term
+    (31) arith_expr -> . arith_expr PLUS term
+    (32) arith_expr -> . arith_expr MINUS term
+    (33) term -> . factor
+    (34) term -> . term TIMES factor
+    (35) term -> . term DIVIDE factor
+    (36) factor -> . MINUS factor
+    (37) factor -> . atom
+    (38) atom -> . NAME
+    (39) atom -> . literal
+    (40) atom -> . LPAREN expr RPAREN
+    (41) atom -> . call
+    (50) literal -> . INT
+    (51) literal -> . FLOAT
+    (52) literal -> . STRING
+    (42) call -> . NAME LPAREN arglist_opt RPAREN
+    (43) call -> . PRINT LPAREN arglist_opt RPAREN
+    (44) call -> . LEN LPAREN arglist_opt RPAREN
+    (45) call -> . ROUND LPAREN arglist_opt RPAREN
+
+    NOT             shift and go to state 16
+    MINUS           shift and go to state 20
+    NAME            shift and go to state 40
+    LPAREN          shift and go to state 11
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    STRING          shift and go to state 27
+    PRINT           shift and go to state 28
+    LEN             shift and go to state 29
+    ROUND           shift and go to state 30
+
+    expr                           shift and go to state 81
+    or_expr                        shift and go to state 13
+    and_expr                       shift and go to state 14
+    not_expr                       shift and go to state 15
+    comparison                     shift and go to state 17
+    arith_expr                     shift and go to state 18
+    term                           shift and go to state 19
+    factor                         shift and go to state 21
+    atom                           shift and go to state 22
+    literal                        shift and go to state 23
+    call                           shift and go to state 24
+
+state 77
+
+    (43) call -> PRINT LPAREN arglist_opt RPAREN .
+
+    TIMES           reduce using rule 43 (call -> PRINT LPAREN arglist_opt RPAREN .)
+    DIVIDE          reduce using rule 43 (call -> PRINT LPAREN arglist_opt RPAREN .)
+    PLUS            reduce using rule 43 (call -> PRINT LPAREN arglist_opt RPAREN .)
+    MINUS           reduce using rule 43 (call -> PRINT LPAREN arglist_opt RPAREN .)
+    EQEQ            reduce using rule 43 (call -> PRINT LPAREN arglist_opt RPAREN .)
+    NEQ             reduce using rule 43 (call -> PRINT LPAREN arglist_opt RPAREN .)
+    LT              reduce using rule 43 (call -> PRINT LPAREN arglist_opt RPAREN .)
+    GT              reduce using rule 43 (call -> PRINT LPAREN arglist_opt RPAREN .)
+    AND             reduce using rule 43 (call -> PRINT LPAREN arglist_opt RPAREN .)
+    OR              reduce using rule 43 (call -> PRINT LPAREN arglist_opt RPAREN .)
+    NEWLINE         reduce using rule 43 (call -> PRINT LPAREN arglist_opt RPAREN .)
+    RPAREN          reduce using rule 43 (call -> PRINT LPAREN arglist_opt RPAREN .)
+    COMMA           reduce using rule 43 (call -> PRINT LPAREN arglist_opt RPAREN .)
+
+
+state 78
+
+    (44) call -> LEN LPAREN arglist_opt RPAREN .
+
+    TIMES           reduce using rule 44 (call -> LEN LPAREN arglist_opt RPAREN .)
+    DIVIDE          reduce using rule 44 (call -> LEN LPAREN arglist_opt RPAREN .)
+    PLUS            reduce using rule 44 (call -> LEN LPAREN arglist_opt RPAREN .)
+    MINUS           reduce using rule 44 (call -> LEN LPAREN arglist_opt RPAREN .)
+    EQEQ            reduce using rule 44 (call -> LEN LPAREN arglist_opt RPAREN .)
+    NEQ             reduce using rule 44 (call -> LEN LPAREN arglist_opt RPAREN .)
+    LT              reduce using rule 44 (call -> LEN LPAREN arglist_opt RPAREN .)
+    GT              reduce using rule 44 (call -> LEN LPAREN arglist_opt RPAREN .)
+    AND             reduce using rule 44 (call -> LEN LPAREN arglist_opt RPAREN .)
+    OR              reduce using rule 44 (call -> LEN LPAREN arglist_opt RPAREN .)
+    NEWLINE         reduce using rule 44 (call -> LEN LPAREN arglist_opt RPAREN .)
+    RPAREN          reduce using rule 44 (call -> LEN LPAREN arglist_opt RPAREN .)
+    COMMA           reduce using rule 44 (call -> LEN LPAREN arglist_opt RPAREN .)
+
+
+state 79
+
+    (45) call -> ROUND LPAREN arglist_opt RPAREN .
+
+    TIMES           reduce using rule 45 (call -> ROUND LPAREN arglist_opt RPAREN .)
+    DIVIDE          reduce using rule 45 (call -> ROUND LPAREN arglist_opt RPAREN .)
+    PLUS            reduce using rule 45 (call -> ROUND LPAREN arglist_opt RPAREN .)
+    MINUS           reduce using rule 45 (call -> ROUND LPAREN arglist_opt RPAREN .)
+    EQEQ            reduce using rule 45 (call -> ROUND LPAREN arglist_opt RPAREN .)
+    NEQ             reduce using rule 45 (call -> ROUND LPAREN arglist_opt RPAREN .)
+    LT              reduce using rule 45 (call -> ROUND LPAREN arglist_opt RPAREN .)
+    GT              reduce using rule 45 (call -> ROUND LPAREN arglist_opt RPAREN .)
+    AND             reduce using rule 45 (call -> ROUND LPAREN arglist_opt RPAREN .)
+    OR              reduce using rule 45 (call -> ROUND LPAREN arglist_opt RPAREN .)
+    NEWLINE         reduce using rule 45 (call -> ROUND LPAREN arglist_opt RPAREN .)
+    RPAREN          reduce using rule 45 (call -> ROUND LPAREN arglist_opt RPAREN .)
+    COMMA           reduce using rule 45 (call -> ROUND LPAREN arglist_opt RPAREN .)
+
+
+state 80
+
+    (7) funcdef -> DEF NAME LPAREN NAME COMMA . NAME RPAREN COLON NEWLINE INDENT stmt_block DEDENT
+
+    NAME            shift and go to state 82
+
+
+state 81
+
+    (49) arglist -> arglist COMMA expr .
+
+    COMMA           reduce using rule 49 (arglist -> arglist COMMA expr .)
+    RPAREN          reduce using rule 49 (arglist -> arglist COMMA expr .)
+
+
+state 82
+
+    (7) funcdef -> DEF NAME LPAREN NAME COMMA NAME . RPAREN COLON NEWLINE INDENT stmt_block DEDENT
+
+    RPAREN          shift and go to state 83
+
+
+state 83
+
+    (7) funcdef -> DEF NAME LPAREN NAME COMMA NAME RPAREN . COLON NEWLINE INDENT stmt_block DEDENT
+
+    COLON           shift and go to state 84
+
+
+state 84
+
+    (7) funcdef -> DEF NAME LPAREN NAME COMMA NAME RPAREN COLON . NEWLINE INDENT stmt_block DEDENT
+
+    NEWLINE         shift and go to state 85
+
+
+state 85
+
+    (7) funcdef -> DEF NAME LPAREN NAME COMMA NAME RPAREN COLON NEWLINE . INDENT stmt_block DEDENT
+
+    INDENT          shift and go to state 86
+
+
+state 86
+
+    (7) funcdef -> DEF NAME LPAREN NAME COMMA NAME RPAREN COLON NEWLINE INDENT . stmt_block DEDENT
+    (8) stmt_block -> . stmt_block stmt_line
+    (9) stmt_block -> . stmt_line
+    (4) stmt_line -> . simple_stmt NEWLINE
+    (5) stmt_line -> . funcdef
+    (6) stmt_line -> . NEWLINE
+    (10) simple_stmt -> . assign_stmt
+    (11) simple_stmt -> . expr_stmt
+    (7) funcdef -> . DEF NAME LPAREN NAME COMMA NAME RPAREN COLON NEWLINE INDENT stmt_block DEDENT
+    (12) assign_stmt -> . NAME assign_op expr
+    (16) expr_stmt -> . expr
+    (17) expr -> . or_expr
+    (18) or_expr -> . and_expr
+    (19) or_expr -> . or_expr OR and_expr
+    (20) and_expr -> . not_expr
+    (21) and_expr -> . and_expr AND not_expr
+    (22) not_expr -> . NOT not_expr
+    (23) not_expr -> . comparison
+    (24) comparison -> . arith_expr
+    (25) comparison -> . arith_expr comp_op arith_expr
+    (30) arith_expr -> . term
+    (31) arith_expr -> . arith_expr PLUS term
+    (32) arith_expr -> . arith_expr MINUS term
+    (33) term -> . factor
+    (34) term -> . term TIMES factor
+    (35) term -> . term DIVIDE factor
+    (36) factor -> . MINUS factor
+    (37) factor -> . atom
+    (38) atom -> . NAME
+    (39) atom -> . literal
+    (40) atom -> . LPAREN expr RPAREN
+    (41) atom -> . call
+    (50) literal -> . INT
+    (51) literal -> . FLOAT
+    (52) literal -> . STRING
+    (42) call -> . NAME LPAREN arglist_opt RPAREN
+    (43) call -> . PRINT LPAREN arglist_opt RPAREN
+    (44) call -> . LEN LPAREN arglist_opt RPAREN
+    (45) call -> . ROUND LPAREN arglist_opt RPAREN
+
+    NEWLINE         shift and go to state 5
+    DEF             shift and go to state 9
+    NAME            shift and go to state 10
+    NOT             shift and go to state 16
+    MINUS           shift and go to state 20
+    LPAREN          shift and go to state 11
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    STRING          shift and go to state 27
+    PRINT           shift and go to state 28
+    LEN             shift and go to state 29
+    ROUND           shift and go to state 30
+
+    stmt_block                     shift and go to state 87
+    stmt_line                      shift and go to state 88
+    simple_stmt                    shift and go to state 4
+    funcdef                        shift and go to state 6
+    assign_stmt                    shift and go to state 7
+    expr_stmt                      shift and go to state 8
+    expr                           shift and go to state 12
+    or_expr                        shift and go to state 13
+    and_expr                       shift and go to state 14
+    not_expr                       shift and go to state 15
+    comparison                     shift and go to state 17
+    arith_expr                     shift and go to state 18
+    term                           shift and go to state 19
+    factor                         shift and go to state 21
+    atom                           shift and go to state 22
+    literal                        shift and go to state 23
+    call                           shift and go to state 24
+
+state 87
+
+    (7) funcdef -> DEF NAME LPAREN NAME COMMA NAME RPAREN COLON NEWLINE INDENT stmt_block . DEDENT
+    (8) stmt_block -> stmt_block . stmt_line
+    (4) stmt_line -> . simple_stmt NEWLINE
+    (5) stmt_line -> . funcdef
+    (6) stmt_line -> . NEWLINE
+    (10) simple_stmt -> . assign_stmt
+    (11) simple_stmt -> . expr_stmt
+    (7) funcdef -> . DEF NAME LPAREN NAME COMMA NAME RPAREN COLON NEWLINE INDENT stmt_block DEDENT
+    (12) assign_stmt -> . NAME assign_op expr
+    (16) expr_stmt -> . expr
+    (17) expr -> . or_expr
+    (18) or_expr -> . and_expr
+    (19) or_expr -> . or_expr OR and_expr
+    (20) and_expr -> . not_expr
+    (21) and_expr -> . and_expr AND not_expr
+    (22) not_expr -> . NOT not_expr
+    (23) not_expr -> . comparison
+    (24) comparison -> . arith_expr
+    (25) comparison -> . arith_expr comp_op arith_expr
+    (30) arith_expr -> . term
+    (31) arith_expr -> . arith_expr PLUS term
+    (32) arith_expr -> . arith_expr MINUS term
+    (33) term -> . factor
+    (34) term -> . term TIMES factor
+    (35) term -> . term DIVIDE factor
+    (36) factor -> . MINUS factor
+    (37) factor -> . atom
+    (38) atom -> . NAME
+    (39) atom -> . literal
+    (40) atom -> . LPAREN expr RPAREN
+    (41) atom -> . call
+    (50) literal -> . INT
+    (51) literal -> . FLOAT
+    (52) literal -> . STRING
+    (42) call -> . NAME LPAREN arglist_opt RPAREN
+    (43) call -> . PRINT LPAREN arglist_opt RPAREN
+    (44) call -> . LEN LPAREN arglist_opt RPAREN
+    (45) call -> . ROUND LPAREN arglist_opt RPAREN
+
+    DEDENT          shift and go to state 89
+    NEWLINE         shift and go to state 5
+    DEF             shift and go to state 9
+    NAME            shift and go to state 10
+    NOT             shift and go to state 16
+    MINUS           shift and go to state 20
+    LPAREN          shift and go to state 11
+    INT             shift and go to state 25
+    FLOAT           shift and go to state 26
+    STRING          shift and go to state 27
+    PRINT           shift and go to state 28
+    LEN             shift and go to state 29
+    ROUND           shift and go to state 30
+
+    stmt_line                      shift and go to state 90
+    simple_stmt                    shift and go to state 4
+    funcdef                        shift and go to state 6
+    assign_stmt                    shift and go to state 7
+    expr_stmt                      shift and go to state 8
+    expr                           shift and go to state 12
+    or_expr                        shift and go to state 13
+    and_expr                       shift and go to state 14
+    not_expr                       shift and go to state 15
+    comparison                     shift and go to state 17
+    arith_expr                     shift and go to state 18
+    term                           shift and go to state 19
+    factor                         shift and go to state 21
+    atom                           shift and go to state 22
+    literal                        shift and go to state 23
+    call                           shift and go to state 24
+
+state 88
+
+    (9) stmt_block -> stmt_line .
+
+    DEDENT          reduce using rule 9 (stmt_block -> stmt_line .)
+    NEWLINE         reduce using rule 9 (stmt_block -> stmt_line .)
+    DEF             reduce using rule 9 (stmt_block -> stmt_line .)
+    NAME            reduce using rule 9 (stmt_block -> stmt_line .)
+    NOT             reduce using rule 9 (stmt_block -> stmt_line .)
+    MINUS           reduce using rule 9 (stmt_block -> stmt_line .)
+    LPAREN          reduce using rule 9 (stmt_block -> stmt_line .)
+    INT             reduce using rule 9 (stmt_block -> stmt_line .)
+    FLOAT           reduce using rule 9 (stmt_block -> stmt_line .)
+    STRING          reduce using rule 9 (stmt_block -> stmt_line .)
+    PRINT           reduce using rule 9 (stmt_block -> stmt_line .)
+    LEN             reduce using rule 9 (stmt_block -> stmt_line .)
+    ROUND           reduce using rule 9 (stmt_block -> stmt_line .)
+
+
+state 89
+
+    (7) funcdef -> DEF NAME LPAREN NAME COMMA NAME RPAREN COLON NEWLINE INDENT stmt_block DEDENT .
+
+    NEWLINE         reduce using rule 7 (funcdef -> DEF NAME LPAREN NAME COMMA NAME RPAREN COLON NEWLINE INDENT stmt_block DEDENT .)
+    DEF             reduce using rule 7 (funcdef -> DEF NAME LPAREN NAME COMMA NAME RPAREN COLON NEWLINE INDENT stmt_block DEDENT .)
+    NAME            reduce using rule 7 (funcdef -> DEF NAME LPAREN NAME COMMA NAME RPAREN COLON NEWLINE INDENT stmt_block DEDENT .)
+    NOT             reduce using rule 7 (funcdef -> DEF NAME LPAREN NAME COMMA NAME RPAREN COLON NEWLINE INDENT stmt_block DEDENT .)
+    MINUS           reduce using rule 7 (funcdef -> DEF NAME LPAREN NAME COMMA NAME RPAREN COLON NEWLINE INDENT stmt_block DEDENT .)
+    LPAREN          reduce using rule 7 (funcdef -> DEF NAME LPAREN NAME COMMA NAME RPAREN COLON NEWLINE INDENT stmt_block DEDENT .)
+    INT             reduce using rule 7 (funcdef -> DEF NAME LPAREN NAME COMMA NAME RPAREN COLON NEWLINE INDENT stmt_block DEDENT .)
+    FLOAT           reduce using rule 7 (funcdef -> DEF NAME LPAREN NAME COMMA NAME RPAREN COLON NEWLINE INDENT stmt_block DEDENT .)
+    STRING          reduce using rule 7 (funcdef -> DEF NAME LPAREN NAME COMMA NAME RPAREN COLON NEWLINE INDENT stmt_block DEDENT .)
+    PRINT           reduce using rule 7 (funcdef -> DEF NAME LPAREN NAME COMMA NAME RPAREN COLON NEWLINE INDENT stmt_block DEDENT .)
+    LEN             reduce using rule 7 (funcdef -> DEF NAME LPAREN NAME COMMA NAME RPAREN COLON NEWLINE INDENT stmt_block DEDENT .)
+    ROUND           reduce using rule 7 (funcdef -> DEF NAME LPAREN NAME COMMA NAME RPAREN COLON NEWLINE INDENT stmt_block DEDENT .)
+    $end            reduce using rule 7 (funcdef -> DEF NAME LPAREN NAME COMMA NAME RPAREN COLON NEWLINE INDENT stmt_block DEDENT .)
+    DEDENT          reduce using rule 7 (funcdef -> DEF NAME LPAREN NAME COMMA NAME RPAREN COLON NEWLINE INDENT stmt_block DEDENT .)
+
+
+state 90
+
+    (8) stmt_block -> stmt_block stmt_line .
+
+    DEDENT          reduce using rule 8 (stmt_block -> stmt_block stmt_line .)
+    NEWLINE         reduce using rule 8 (stmt_block -> stmt_block stmt_line .)
+    DEF             reduce using rule 8 (stmt_block -> stmt_block stmt_line .)
+    NAME            reduce using rule 8 (stmt_block -> stmt_block stmt_line .)
+    NOT             reduce using rule 8 (stmt_block -> stmt_block stmt_line .)
+    MINUS           reduce using rule 8 (stmt_block -> stmt_block stmt_line .)
+    LPAREN          reduce using rule 8 (stmt_block -> stmt_block stmt_line .)
+    INT             reduce using rule 8 (stmt_block -> stmt_block stmt_line .)
+    FLOAT           reduce using rule 8 (stmt_block -> stmt_block stmt_line .)
+    STRING          reduce using rule 8 (stmt_block -> stmt_block stmt_line .)
+    PRINT           reduce using rule 8 (stmt_block -> stmt_block stmt_line .)
+    LEN             reduce using rule 8 (stmt_block -> stmt_block stmt_line .)
+    ROUND           reduce using rule 8 (stmt_block -> stmt_block stmt_line .)
+

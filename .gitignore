@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# PLY generated files
+parsetab.py
+lextab.py
+
+# IDEs
+.vscode/
+.idea/
+.DS_Store
