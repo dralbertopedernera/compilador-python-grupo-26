@@ -1,9 +1,7 @@
-# Este archivo contiene errores de sintaxis
-
-def sin_dos_puntos(a, b)  # Falta :
+def sin_dos_puntos(a, b) 
     print(a)
 
 def indentacion_mal(a, b):
-print(a) # Falta indentación
+print(a) 
 
-x = 10 +  # Expresión incompleta
+x = 10 +  

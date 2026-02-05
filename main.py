@@ -1,5 +1,5 @@
 import sys
-from lexer import lexer
+from lexer import lexer, lexical_errors
 from parser import parser
 
 def main():
@@ -19,6 +19,7 @@ def main():
 
     # 1. Análisis Léxico (opcional: mostrar tokens)
     print("\n[Fase 1: Análisis Léxico]")
+    lexical_errors.clear()
     lexer.input(data)
     
     # Iterar sobre tokens para mostrar errores léxicos si los hay
@@ -30,6 +31,11 @@ def main():
             break
         token_list.append(tok)
         print(tok)
+    
+    if lexical_errors:
+        print(f"\n>>> Se encontraron {len(lexical_errors)} error(es) léxico(s). <<<")
+        print(">>> El programa NO es válido. <<<")
+        return
     
     # Reiniciar lexer para el parser
     lexer.input(data)

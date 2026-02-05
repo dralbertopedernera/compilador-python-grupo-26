@@ -9,7 +9,7 @@ errors = []
 # Regla inicial
 def p_program(p):
     '''program : stmt_list'''
-    print("Análisis Sintáctico Exitoso: El programa es correcto.")
+    # print("Análisis Sintáctico Exitoso: El programa es correcto.")
     p[0] = p[1]
 
 # Lista de sentencias

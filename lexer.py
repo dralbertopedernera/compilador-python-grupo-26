@@ -5,9 +5,7 @@ import ply.lex as lex
 # Palabras reservadas
 reserved = {
     'def': 'DEF',
-    'if': 'IF',       # Aunque no estén explícitamente en el ejemplo mínimo, son comunes. 
-                      # El enunciado dice "Sentencias DEF", pero la gramática no muestra IF.
-                      # Me ceñiré a lo que pide el enunciado estrictamente: DEF, PRINT, LEN, ROUND, AND, OR, NOT
+    'if': 'IF',       
     'print': 'PRINT',
     'len': 'LEN',
     'round': 'ROUND',
@@ -77,15 +75,18 @@ def t_NEWLINE(t):
     # Para el manejo de indentación, necesitamos devolver este token
     return t
 
-# Ignorar espacios y tabs (el manejo de indentación se hace aparte)
-# OJO: PLY ignora t_ignore characters automáticamente, pero para Python
-# necesitamos ver los espacios al inicio de la línea.
-# Estrategia: Ignorar espacios dentro de la línea, pero NO el salto de línea.
-# La indentación se calcula midiendo espacios después de un NEWLINE.
+
 t_ignore = ' \t'
 
+# Lista para acumular errores léxicos
+lexical_errors = []
+
+# ... (rest of imports/definitions if needed, but I'll stick to inserting/modifying specific chunks)
+
 def t_error(t):
-    print(f"Error léxico: Carácter ilegal '{t.value[0]}' en línea {t.lineno}")
+    msg = f"Error léxico: Carácter ilegal '{t.value[0]}' en línea {t.lineno}"
+    print(msg)
+    lexical_errors.append(msg)
     t.lexer.skip(1)
 
 # --- Filtro de Indentación ---
@@ -97,6 +98,7 @@ class IndentLexer(object):
 
     def input(self, data):
         self.lexer.input(data)
+        self.lexer.lineno = 1
         self.token_stream = self.filter_tokens(self.lexer)
 
     def token(self):
