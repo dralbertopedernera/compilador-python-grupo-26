@@ -34,18 +34,59 @@ Se usan regex para identificar patrones de texto.
     - `t_STRING`: Maneja cadenas con comillas simples o dobles. Elimina las comillas del valor.
     - `t_NAME`: Identifica nombres de variables o funciones. **Importante**: Aquí se verifica si el nombre es una palabra reservada usando `reserved.get(t.value, 'NAME')`.
 
-### C. Manejo de Indentación (`IndentLexer`)
-Python usa indentación para definir bloques, pero las gramáticas libres de contexto (como la de yacc) no entienden de espacios. Por eso, transformamos la indentación en tokens explícitos: `INDENT` (inicio de bloque) y `DEDENT` (fin de bloque).
+    - **Diferencia Clave**:
+        - **Regex Simple**: Se usa cuando el token es *estático* (siempre es el mismo texto, como `+` o `if`). El valor del token es exactamente lo que se escaneó.
+        - **Regex con Acción (Función)**: Se usa cuando el token es *dinámico* (como un número `123`, `45.6` o un nombre `myVar`) o requiere procesamiento (como quitar comillas a un string, convertir a int/float, o verificar palabras reservadas).
 
-**Clase `IndentLexer`**:
-1.  **Filtro**: Envuelve el lexer original. Intercepta el flujo de tokens.
-2.  **Lógica (`filter_tokens`)**:
-    - Mantiene una pila (`indent_stack`) con los niveles de indentación (empieza en 0).
-    - Cuando encuentra un `NEWLINE`, mira los espacios/tabs de la siguiente línea.
-    - **Si la indentación aumenta**: Genera un token `INDENT` y apila el nuevo nivel.
-    - **Si la indentación disminuye**: Genera uno o más tokens `DEDENT` hasta coincidir con un nivel previo en la pila. Si no coincide, reporta error.
-    - **Si es igual**: No hace nada.
-3.  **Final del archivo**: Genera `DEDENT`s restantes para cerrar todos los bloques abiertos.
+### C. Manejo de Indentación (`IndentLexer`)
+
+Python usa indentación significativa para definir bloques, pero las gramáticas libres de contexto (como la de yacc) no "entienden" de espacios en blanco; solo entienden tokens de inicio (`{`) y fin (`}`).
+Para solucionar esto, transformamos la indentación visual en tokens explícitos: `INDENT` (inicio de bloque) y `DEDENT` (fin de bloque).
+
+**1. El Patrón de Filtro (Wrapper)**:
+La clase `IndentLexer` envuelve al lexer original. Funciona como un "interceptor" (middleware).
+- `lexer.token()` original devuelve tokens crudos.
+- `IndentLexer.token()` llama al original, pero inyecta `INDENT` y `DEDENT` cuando detecta cambios de nivel.
+
+**2. La Lógica Paso a Paso (`filter_tokens`)**:
+Mantenemos una **pila (`indent_stack`)** que rastrea los niveles de indentación anidados. Empieza con `[0]` (nivel base).
+
+Cuando el lexer encuentra un token `NEWLINE` (fin de línea):
+1.  **Lectura Manual**: Dado que PLY ignora los espacios (`t_ignore`), debemos leer manualmente los caracteres siguientes (`lexdata`) para contar cuántos espacios o tabulaciones hay al inicio de la nueva línea.
+2.  **Comparación con la Pila**:
+    - **Mayor Indentación (> tope pila)**:
+        - Significa que **se abrió un nuevo bloque**.
+        - Acción: Generar token `INDENT`, empujar nueva indentación a la pila.
+        - Ejemplo: De 0 espacios pasamos a 4 espacios. Pila `[0]` -> `[0, 4]`. Token `INDENT`.
+    - **Menor Indentación (< tope pila)**:
+        - Significa que **se cerró uno o más bloques**.
+        - Acción: Generar token `DEDENT` repetidamente y sacar elementos de la pila hasta encontrar el nivel actual.
+        - **Error**: Si la indentación actual no coincide con ningún nivel anterior en la pila, es un `IndentationError` (ej. desindentar a 3 espacios cuando los niveles previos eran 0 y 4).
+        - Ejemplo: De 8 espacios bajamos a 0. Pila `[0, 4, 8]` -> `DEDENT` (saca 8) -> `DEDENT` (saca 4) -> Pila `[0]`.
+    - **Igual Indentación (== tope pila)**:
+        - Continuamos en el mismo bloque. No se genera ningún token especial.
+
+**3. Ejemplo Visual ("Traza")**:
+
+Código:
+```python
+def foo():      # Nivel 0
+    print("x")  # Nivel 4
+print("y")      # Nivel 0
+```
+
+**Flujo de Tokens**:
+1.  `DEF` `NAME` `LPAREN` `RPAREN` `COLON` `NEWLINE`. (El lexer ve el `\n`).
+2.  **Filtro**: Lee 4 espacios en la siguiente línea.
+    - `4 > 0` (Tope pila).
+    - **Genera**: `INDENT`. Pila: `[0, 4]`.
+3.  `PRINT` `LPAREN` `STRING` `RPAREN` `NEWLINE`.
+4.  **Filtro**: Lee 0 espacios en la siguiente línea ("print").
+    - `0 < 4` (Tope pila).
+    - **Genera**: `DEDENT`. Pop 4. Pila: `[0]`.
+    - ¿Coincide 0 con el nuevo tope (0)? Sí. Listo.
+5.  `PRINT`... `EOF`.
+6.  **Fin de Archivo**: Si quedaran niveles en la pila (ej. si el archivo termina indentado), se generan `DEDENT`s hasta vaciarla a 0.
 
 ### D. Manejo de Errores
 - `t_error`: Se llama cuando el lexer encuentra un caracter que no coincide con ninguna regla. Imprime el error, lo guarda en `lexical_errors` y salta el caracter.
@@ -75,13 +116,18 @@ En lugar de usar una tabla `precedence`, la jerarquía de las reglas define el o
 
 Esto asegura que `2 + 3 * 4` se parsee como `2 + (3 * 4)`.
 
-### C. Construcción del AST (Árbol Sintáctico)
-En cada regla `p[0] = ...`, construimos una tupla que representa el nodo del árbol.
-- Ejemplo `assign_stmt`: `NAME = expr` -> `('assign', 'x', '=', 5)`
-- Ejemplo `binop`: `expr + expr` -> `('arith', '+', izq, der)`
+### C. Construcción del AST (Árbol Sintáctico Abstracto)
+El AST es una representación jerárquica del código que elimina los detalles innecesarios de la sintaxis (como paréntesis, dos puntos, o palabras clave) y se queda solo con la estructura lógica.
+
+*   **¿Por qué "Árbol"?**: Porque el código es jerárquico. Una suma `2 + 3` es hija de una asignación `x = ...`.
+*   **¿Por qué "Abstracto"?**: Porque abstrae (elimina) la sintaxis "ruidosa". En el código escribes `(2 + 3)`, pero en el árbol solo importa que es una SUMA de 2 y 3. Los paréntesis ya no hacen falta porque la estructura del árbol define la prioridad.
+
+En cada regla `p[0] = ...`, construimos una tupla que representa un nodo de este árbol:
+- Ejemplo `assign_stmt`: `x = 5` -> `('assign', 'x', '=', 5)`
+- Ejemplo `binop`: `2 + 3` -> `('arith', '+', 2, 3)`
 - Ejemplo `funcdef`: `def nombre(args): ...` -> `('func_def', nombre, [args], cuerpo)`
 
-Este AST es la "salida" del compilador, una representación estructurada del código.
+Este AST es la "salida" del análisis sintáctico. Es una versión pura y estructurada del código fuente, lista para ser ejecutada o convertida a código de máquina.
 
 ### D. Manejo de Errores
 - `p_error`: Se llama cuando llega un token inesperado.
