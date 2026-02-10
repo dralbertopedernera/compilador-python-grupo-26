@@ -82,10 +82,12 @@ def p_expr_stmt(p):
 # La jerarquía de funciones define la precedencia de operadores (de menor a mayor).
 # or -> and -> not -> comparación -> suma/resta -> mult/div -> unario -> átomo
 
+# Expresión OR: x or y. Nivel más bajo de precedencia.
 def p_expr(p):
     '''expr : or_expr'''
     p[0] = p[1]
 
+# Regla recursiva para múltiples ORs.
 def p_or_expr(p):
     '''or_expr : and_expr
                | or_expr OR and_expr'''
@@ -94,6 +96,7 @@ def p_or_expr(p):
     else:
         p[0] = ('or', p[1], p[3])
 
+# Expresión AND: x and y. Precedencia mayor que OR.
 def p_and_expr(p):
     '''and_expr : not_expr
                 | and_expr AND not_expr'''
@@ -102,6 +105,7 @@ def p_and_expr(p):
     else:
         p[0] = ('and', p[1], p[3])
 
+# Expresión NOT: not x. Precedencia mayor que AND.
 def p_not_expr(p):
     '''not_expr : NOT not_expr
                 | comparison'''
@@ -110,6 +114,7 @@ def p_not_expr(p):
     else:
         p[0] = p[1]
 
+# Comparaciones: ==, !=, <, >.
 def p_comparison(p):
     '''comparison : arith_expr
                   | arith_expr comp_op arith_expr'''
@@ -125,6 +130,7 @@ def p_comp_op(p):
                | GT'''
     p[0] = p[1]
 
+# Expresiones Aritméticas: Suma y Resta.
 def p_arith_expr(p):
     '''arith_expr : term
                   | arith_expr PLUS term
@@ -135,6 +141,7 @@ def p_arith_expr(p):
     else:
         p[0] = ('arith', p[2], p[1], p[3])
 
+# Término: Multiplicación y División. Precedencia mayor que Suma/Resta.
 def p_term(p):
     '''term : factor
             | term TIMES factor
@@ -144,6 +151,7 @@ def p_term(p):
     else:
         p[0] = ('term', p[2], p[1], p[3])
 
+# Factor: Operadores unarios (ej: -5). Precedencia muy alta.
 def p_factor(p):
     '''factor : MINUS factor
               | atom'''
@@ -164,6 +172,8 @@ def p_atom(p):
     else:
         p[0] = p[2]
 
+# Llamada a función: nombre(args)
+# Incluye soporte especial para print(), len(), round()
 def p_call(p):
     '''call : NAME LPAREN arglist_opt RPAREN
             | PRINT LPAREN arglist_opt RPAREN
@@ -171,11 +181,13 @@ def p_call(p):
             | ROUND LPAREN arglist_opt RPAREN'''
     p[0] = ('call', p[1], p[3])
 
+# Argumentos Opcionales: Puede estar vacío o tener argumentos.
 def p_arglist_opt(p):
     '''arglist_opt : empty
                    | arglist'''
     p[0] = p[1] if p[1] is not None else []
 
+# Lista de Argumentos: Recursiva (arg, arg, arg)
 def p_arglist(p):
     '''arglist : expr
                | arglist COMMA expr'''
@@ -191,6 +203,7 @@ def p_literal(p):
     # Envolvemos el valor en una tupla para identificarlo como literal en el AST
     p[0] = ('literal', p[1])
 
+# Producción vacía: Útil para opciones opcionales.
 def p_empty(p):
     '''empty :'''
     pass
