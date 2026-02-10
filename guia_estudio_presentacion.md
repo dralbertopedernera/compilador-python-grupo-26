@@ -95,44 +95,83 @@ print("y")      # Nivel 0
 
 ## 3. Analizador Sintáctico (`parser.py`)
 
-El parser toma los tokens del lexer y verifica que sigan la gramática definida. Construye un Árbol de Sintaxis Abstracta (AST) o ejecuta acciones.
+El parser es el "policía gramatical" del compilador. Recibe los tokens del lexer y verifica si el orden tiene sentido según las reglas del lenguaje.
 
-### A. Estructura de la Gramática
-Las funciones `p_nombre_regla` definen la gramática en sus docstrings.
-- **`p_program`**: Regla inicial. Un programa es una lista de sentencias (`stmt_list`).
-- **`p_stmt_list`**: Define una secuencia de sentencias. Es recursiva: `lista -> lista sentencia | sentencia`.
-- **`p_stmt_line`**: Una "línea" puede ser una sentencia simple, una definición de función (`funcdef`) o una línea vacía.
+### A. Concepto Básico: Reglas de Producción
+Imagina que defines una oración en español:
+`Oración -> Sujeto + Verbo + Predicado`
 
-### B. Precedencia de Operadores
-En lugar de usar una tabla `precedence`, la jerarquía de las reglas define el orden de operaciones (de menor a mayor precedencia):
-1.  **`or_expr`**: Más baja precedencia.
-2.  **`and_expr`**
-3.  **`not_expr`**
-4.  **`comparison`** (`==`, `<`, etc.)
-5.  **`arith_expr`** (`+`, `-`)
-6.  **`term`** (`*`, `/`)
-7.  **`factor`** (Menos unario `-x`)
-8.  **`atom`** (Paréntesis, números, variables): Más alta precedencia.
+En nuestro compilador, definimos reglas similares para Python:
+`asignacion -> NOMBRE + IGUAL + EXPRESION` (Ej: `x = 5`)
 
-Esto asegura que `2 + 3 * 4` se parsee como `2 + (3 * 4)`.
+Cada función en `parser.py` representa una de estas reglas.
 
-### C. Construcción del AST (Árbol Sintáctico Abstracto)
-El AST es una representación jerárquica del código que elimina los detalles innecesarios de la sintaxis (como paréntesis, dos puntos, o palabras clave) y se queda solo con la estructura lógica.
+### B. Cómo funciona PLY (Paso a Paso)
+PLY usa un algoritmo LR (Left-to-Right scanning, Rightmost derivation).
+1.  **Lee tokens uno a uno**: `NAME(x)`, `EQUAL(=)`, `INT(5)`.
+2.  **Busca coincidencia**: ¿Existe alguna regla que sea `NAME EQUAL INT`?
+3.  **Reduce**: Si encuentra una regla (`assign_stmt`), agrupa esos 3 tokens en una sola "caja" (un nodo).
+4.  **Repite**: Ahora tiene una "caja de asignación". Sigue leyendo hasta completar todo el programa.
 
-*   **¿Por qué "Árbol"?**: Porque el código es jerárquico. Una suma `2 + 3` es hija de una asignación `x = ...`.
-*   **¿Por qué "Abstracto"?**: Porque abstrae (elimina) la sintaxis "ruidosa". En el código escribes `(2 + 3)`, pero en el árbol solo importa que es una SUMA de 2 y 3. Los paréntesis ya no hacen falta porque la estructura del árbol define la prioridad.
+### C. La Estructura de `p` (El Array de Partes)
+Dentro de cada función, `p` actúa como un array que contiene las piezas de la regla.
+Supongamos la regla: `expr : expr PLUS term` (Suma)
+- `p[0]`: Es la **caja resultante** (lo que devolvemos).
+- `p[1]`: El primer elemento (`expr` de la izquierda).
+- `p[2]`: El símbolo `PLUS` (`+`).
+- `p[3]`: El segundo elemento (`term` de la derecha).
 
-En cada regla `p[0] = ...`, construimos una tupla que representa un nodo de este árbol:
-- Ejemplo `assign_stmt`: `x = 5` -> `('assign', 'x', '=', 5)`
-- Ejemplo `binop`: `2 + 3` -> `('arith', '+', 2, 3)`
-- Ejemplo `funcdef`: `def nombre(args): ...` -> `('func_def', nombre, [args], cuerpo)`
+**Código Real**:
+```python
+def p_arith_expr(p):
+    '''arith_expr : arith_expr PLUS term'''
+    # p[0]        p[1]       p[2] p[3]
+    
+    # Creamos una tupla que representa esta suma en el árbol
+    p[0] = ('arith', '+', p[1], p[3])
+```
 
-Este AST es la "salida" del análisis sintáctico. Es una versión pura y estructurada del código fuente, lista para ser ejecutada o convertida a código de máquina.
+### D. Recursividad y Listas
+¿Cómo parseamos una lista de sentencias infinita? Usando recursividad.
+`stmt_list -> stmt_list + stmt_line`
+Traducción: "Una lista de sentencias es... una lista anterior MÁS una nueva línea".
 
-### D. Manejo de Errores
-- `p_error`: Se llama cuando llega un token inesperado.
-    - Si `p` existe: Imprime el token y línea.
-    - Si `p` es `None` (EOF): Significa que el archivo terminó inesperadamente (ej. falta cerrar un paréntesis).
+**Ejemplo de Ejecución**:
+Código:
+```python
+x = 1
+print(x)
+```
+1.  Parser lee `x = 1` -> Lo convierte en `stmt_line`.
+    - `stmt_list` inicial = [`stmt_line`].
+2.  Parser lee `print(x)` -> Lo convierte en otro `stmt_line`.
+    - Regla: `stmt_list (anterior) + stmt_line (nuevo)`.
+    - Resultado: `stmt_list` ahora tiene 2 elementos.
+
+### E. Precedencia de Operadores (Jerarquía)
+Para que `2 + 3 * 4` se resuelva correctamente como `2 + (3 * 4)` y no `(2 + 3) * 4`, estructuramos la gramática en niveles:
+1.  **`atom`** (Paréntesis, números): Nivel más alto (se resuelve primero).
+2.  **`factor`** (Negativos `-5`).
+3.  **`term`** (Multiplicación `*`, División `/`).
+4.  **`arith_expr`** (Suma `+`, Resta `-`).
+5.  **`comparison`** (`<`, `>`).
+6.  **`not_expr`, `and_expr`, `or_expr`**: Operadores lógicos (nivel más bajo).
+
+El parser intenta resolver primero los niveles más altos ("más pegajosos"). Como `*` está en `term` y `+` en `arith_expr`, el `term` se agrupa antes.
+
+### F. Construcción del AST (Árbol Sintáctico Abstracto)
+El resultado final es un árbol de tuplas.
+Código: `x = 2 + 3`
+AST:
+```python
+('assign', 'x', '=', 
+    ('arith', '+', 
+        ('literal', 2), 
+        ('literal', 3)
+    )
+)
+```
+Observa cómo la "Suma" está anidada dentro de la "Asignación". Esto es lo que devuelve `parser.parse()`.
 
 ---
 
