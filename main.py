@@ -17,13 +17,14 @@ def main():
 
     print(f"--- Iniciando Análisis de: {filename} ---")
 
-    # 1. Análisis Léxico (opcional: mostrar tokens)
+    # [Fase 1: Análisis Léxico]
+    # Primero convertimos el código fuente en una lista de tokens.
+    # Esto nos permite ver si hay caracteres ilegales antes de intentar parsear la estructura.
     print("\n[Fase 1: Análisis Léxico]")
     lexical_errors.clear()
     lexer.input(data)
     
-    # Iterar sobre tokens para mostrar errores léxicos si los hay
-    # Nota: El lexer ya imprime "Error léxico" en caso de problemas.
+    # Iteramos sobre los tokens para imprimirlos y detectar errores léxicos.
     token_list = []
     while True:
         tok = lexer.token()
@@ -32,24 +33,28 @@ def main():
         token_list.append(tok)
         print(tok)
     
+    # Si hubo errores en la fase léxica, no tiene sentido continuar al parsing.
     if lexical_errors:
         print(f"\n>>> Se encontraron {len(lexical_errors)} error(es) léxico(s). <<<")
         print(">>> El programa NO es válido. <<<")
         return
     
-    # Reiniciar lexer para el parser
+    # [Fase 2: Análisis Sintáctico]
+    # Reiniciamos el lexer (input) porque es un iterador y ya lo consumimos arriba.
+    # Ahora el parser pedirá tokens al lexer uno a uno para validar la gramática.
     lexer.input(data)
 
-    # Limpiar errores previos del módulo parser (si los hubiera)
+    # Limpiamos errores previos del parser para esta nueva ejecución
     import parser as parser_mod
     parser_mod.errors.clear()
 
-    # 2. Análisis Sintáctico
     print("\n[Fase 2: Análisis Sintáctico]")
+    # parser.parse() ejecuta el análisis y devuelve el AST (tupla) si es exitoso.
     result = parser.parse(data, lexer=lexer)
     
     if not parser_mod.errors:
         print("\nResultado del análisis (Estructura interna):")
+        # Imprimimos el Árbol de Sintaxis Abstracta (AST) generado.
         print(result)
         print("\n>>> El programa es léxica y sintácticamente CORRECTO. <<<")
     else:

@@ -1,102 +1,128 @@
-# Guía de Estudio Técnica - Proyecto Compiladores (Grupo 26)
+# Guía de Estudio para la Defensa del Proyecto: Compilador de Python (Subset)
 
-Este documento sirve como material de apoyo para la defensa oral del proyecto. Explica en detalle la arquitectura, el funcionamiento interno de cada módulo y el análisis de los casos de prueba.
+Esta guía desglosa el funcionamiento de cada archivo del proyecto, explicando las decisiones de diseño, la estructura del código y cómo interactúan las partes.
 
-## 1. Arquitectura General
-El compilador se divide en dos fases principales, implementadas usando la librería **PLY (Python Lex-Yacc)**:
-1. **Análisis Léxico (`lexer.py`)**: Convierte el código fuente en una secuencia de tokens. Se encarga de la tokenización y el manejo de la indentación (similar a Python).
-2. **Análisis Sintáctico (`parser.py`)**: Verifica que la secuencia de tokens cumpla con las reglas gramaticales definidas. Construye una estructura lógica (o árbol de sintaxis abstracta implícito en las tuplas) y reporta errores de estructura.
-3. **Controlador Principal (`main.py`)**: Orquesta la lectura del archivo y la ejecución secuencial de ambas fases.
+## 1. Visión General del Proyecto
 
----
-
-## 2. Análisis Detallado de Archivos
-
-### `lexer.py` (El Analizador Léxico)
-**Responsabilidad**: Escanear el texto de entrada y producir tokens.
-
-*   **Definición de Tokens**:
-    *   Utilizamos `ply.lex`.
-    *   **Lista `tokens`**: Define todos los nombres posibles de tokens (ej. `NAME`, `INT`, `PLUS`, `INDENT`).
-    *   **Diccionario `reserved`**: Mapea palabras clave como `def`, `print`, `if` a sus tipos de token específicos (`DEF`, `PRINT`, `IF`). Esto evita que se confundan con identificadores genéricos (`NAME`).
-
-*   **Expresiones Regulares**:
-    *   Simples: `t_PLUS = r'\+'`.
-    *   Con lógica (`def t_INT(t)`): Permiten convertir el valor del lexema (string a int/float) al momento de leerlo.
-    *   `t_NEWLINE`: Es crucial. Incrementa el contador de líneas (`t.lexer.lineno`) para que los reportes de error sean precisos.
-
-*   **Manejo de Indentación (`IndentLexer`)**:
-    *   Python (y nuestro lenguaje) usa indentación significativa para bloques, no llaves `{}`.
-    *   PLY estándar ignora espacios (`t_ignore`). Para solucionar esto, creamos la clase `IndentLexer` que envuelve al lexer base.
-    *   **Lógica**:
-        1. Intercepta los tokens generados.
-        2. Al detectar un `NEWLINE`, espía los espacios/tabs de la siguiente línea.
-        3. Compara con la pila de indentación (`indent_stack`, inicializada en 0).
-        4. **Si es mayor**: Genera un token `INDENT` y lo apila.
-        5. **Si es menor**: Genera uno o más tokens `DEDENT` hasta nivelar la pila.
-        6. **Si es igual**: No hace nada.
-
-### `parser.py` (El Analizador Sintáctico)
-**Responsabilidad**: Validar la estructura gramatical.
-
-*   **Gramática (BNF)**:
-    *   Las funciones `p_...` definen las reglas de producción. El docstring de cada función contiene la regla en formato BNF.
-    *   Ejemplo: `stmt : simple_stmt | funcdef` significa que una sentencia puede ser simple o una definición de función.
-
-*   **Reglas Clave**:
-    *   `program`: Punto de entrada.
-    *   `funcdef`: Estructura de funciones (`DEF NAME LPAREN ... INDENT block DEDENT`). Nótese el uso explícito de `INDENT`/`DEDENT` aquí.
-    *   `expr`: Maneja la precedencia de operadores descomponiendo en `or_expr`, `and_expr`, `comparison`, `arith_expr`, `term`, `factor`, `atom`. Esto asegura que `*` se evalúe antes que `+`, etc.
-
-*   **Manejo de Errores (`p_error`)**:
-    *   Se invoca automáticamente cuando llega un token inesperado para el estado actual del parser.
-    *   Imprime un mensaje amigable con el número de línea.
-    *   Agrega el error a una lista global `errors` para que `main.py` sepa al final que hubo fallos.
-
-### `main.py` (Programa Principal)
-**Responsabilidad**: Interfaz de usuario y flujo de control.
-
-1.  **Entrada**: Recibe el nombre del archivo por línea de comandos (`sys.argv`).
-2.  **Fase Léxica**:
-    *   Primero recorre todo el archivo solo con el lexer para mostrar los tokens (modo debug/demostración). Esto es útil en la defensa para mostrar qué está "viendo" el compilador.
-3.  **Fase Sintáctica**:
-    *   Reinicia el lexer.
-    *   Limpia la lista de errores previos (`parser_mod.errors.clear()`).
-    *   Llama a `parser.parse()`.
-4.  **Decisión Final**:
-    *   Verifica si la lista `errors` está vacía. Si lo está, declara el programa **CORRECTO**. Si no, informa la cantidad de errores y lo declara **INVÁLIDO**.
-
-### `parsetab.py` (Tablas Generadas)
-**Responsabilidad**: Eficiencia.
-
-*   Este archivo **SE GENERA AUTOMÁTICAMENTE** por PLY la primera vez que se corre el parser o cuando la gramática cambia.
-*   **¿Qué contiene?**: Las tablas de transición del autómata LALR (Look-Ahead LR) y el diccionario de reglas gramaticales.
-*   **Importancia**: Evita que PLY tenga que recalcular y analizar todas las funciones del `parser.py` cada vez que se ejecuta el programa, acelerando el inicio. **No se debe editar manualmente.**
+El objetivo es construir un compilador para un subconjunto del lenguaje Python.
+- **Herramienta**: PLY (Python Lex-Yacc), una implementación de lex y yacc para Python.
+- **Componentes**:
+    - `lexer.py`: Analizador Léxico (Tokenización).
+    - `parser.py`: Analizador Sintáctico (Gramática).
+    - `main.py`: Punto de entrada y orquestador.
 
 ---
 
-## 3. Análisis de Casos de Prueba
+## 2. Analizador Léxico (`lexer.py`)
 
-### Caso 1: Programa Válido (`valido.py`)
-Muestra todas las capacidades exitosas:
-*   Definición de funciones (`def suma...`).
-*   Asignaciones (`x = 10`).
-*   Llamadas a funciones anidadas en expresiones (`print(total)`).
-*   Correcta indentación (4 espacios dentro de funciones).
-*   **Resultado**: El parser devuelve una estructura de tuplas que representa el árbol sintáctico (ej. `('func_def', 'suma', ...)`).
+El lexer transforma el código fuente (texto) en una secuencia de tokens.
 
-### Caso 2: Error Léxico (`lexico_error.py`)
-Prueba la robustez del Lexer.
-*   Contiene caracteres como `@` y `$`.
-*   **Comportamiento**:
-    1. El `t_error` en `lexer.py` atrapa el carácter ilegal.
-    2. Imprime "Carácter ilegal".
-    3. Salta el carácter (`skip(1)`).
-    4. El parser probablemente falle después porque falta algo o la expresión quedó incompleta, generando errores en cascada (lo cual es normal en compiladores simples).
+### A. Definición de Tokens
+El código define una lista de `tokens` que el parser consumirá.
+- **Palabras Reservadas**: Se definen en un diccionario `reserved` (`'def': 'DEF'`, `'if': 'IF'`, etc.). Esto permite verificar si un identificador es una variable o una palabra clave.
+- **Tipos de Token**:
+    - **Operadores**: `PLUS`, `MINUS`, `TIMES`, `DIVIDE`, `EQUAL` (asignación), `EQEQ` (comparación), etc.
+    - **Delimitadores**: `LPAREN`, `RPAREN`, `COMMA`, `COLON`.
+    - **Especiales**: `NEWLINE`, `INDENT`, `DEDENT` (cruciales para Python).
 
-### Caso 3: Error Sintáctico (`sintactico_error.py`)
-Prueba las reglas gramaticales.
-*   `def sin_dos_puntos(a, b)` -> Falta `:`. El parser espera `COLON` y encuentra `NEWLINE`.
-*   `print(a)` sin indentar dentro de una función -> Error de indentación lógica.
-*   `x = 10 +` -> Expresión incompleta. El parser espera un número o variable después del `+` y encuentra `NEWLINE`.
-*   **Resultado**: Se reportan múltiples errores sintácticos y el programa se marca como inválido.
+### B. Expresiones Regulares
+Se usan regex para identificar patrones de texto.
+- **Simples**: `t_PLUS = r'\+'` (el `\` escapa el caracter especial `+`).
+- **Complejas (Funciones)**: Se usan cuando se necesita procesar el valor del token.
+    - `t_FLOAT`: Detecta números con punto decimal o notación científica. Convierte el valor a `float`.
+    - `t_INT`: Detecta secuencias de dígitos. Convierte a `int`.
+    - `t_STRING`: Maneja cadenas con comillas simples o dobles. Elimina las comillas del valor.
+    - `t_NAME`: Identifica nombres de variables o funciones. **Importante**: Aquí se verifica si el nombre es una palabra reservada usando `reserved.get(t.value, 'NAME')`.
+
+### C. Manejo de Indentación (`IndentLexer`)
+Python usa indentación para definir bloques, pero las gramáticas libres de contexto (como la de yacc) no entienden de espacios. Por eso, transformamos la indentación en tokens explícitos: `INDENT` (inicio de bloque) y `DEDENT` (fin de bloque).
+
+**Clase `IndentLexer`**:
+1.  **Filtro**: Envuelve el lexer original. Intercepta el flujo de tokens.
+2.  **Lógica (`filter_tokens`)**:
+    - Mantiene una pila (`indent_stack`) con los niveles de indentación (empieza en 0).
+    - Cuando encuentra un `NEWLINE`, mira los espacios/tabs de la siguiente línea.
+    - **Si la indentación aumenta**: Genera un token `INDENT` y apila el nuevo nivel.
+    - **Si la indentación disminuye**: Genera uno o más tokens `DEDENT` hasta coincidir con un nivel previo en la pila. Si no coincide, reporta error.
+    - **Si es igual**: No hace nada.
+3.  **Final del archivo**: Genera `DEDENT`s restantes para cerrar todos los bloques abiertos.
+
+### D. Manejo de Errores
+- `t_error`: Se llama cuando el lexer encuentra un caracter que no coincide con ninguna regla. Imprime el error, lo guarda en `lexical_errors` y salta el caracter.
+
+---
+
+## 3. Analizador Sintáctico (`parser.py`)
+
+El parser toma los tokens del lexer y verifica que sigan la gramática definida. Construye un Árbol de Sintaxis Abstracta (AST) o ejecuta acciones.
+
+### A. Estructura de la Gramática
+Las funciones `p_nombre_regla` definen la gramática en sus docstrings.
+- **`p_program`**: Regla inicial. Un programa es una lista de sentencias (`stmt_list`).
+- **`p_stmt_list`**: Define una secuencia de sentencias. Es recursiva: `lista -> lista sentencia | sentencia`.
+- **`p_stmt_line`**: Una "línea" puede ser una sentencia simple, una definición de función (`funcdef`) o una línea vacía.
+
+### B. Precedencia de Operadores
+En lugar de usar una tabla `precedence`, la jerarquía de las reglas define el orden de operaciones (de menor a mayor precedencia):
+1.  **`or_expr`**: Más baja precedencia.
+2.  **`and_expr`**
+3.  **`not_expr`**
+4.  **`comparison`** (`==`, `<`, etc.)
+5.  **`arith_expr`** (`+`, `-`)
+6.  **`term`** (`*`, `/`)
+7.  **`factor`** (Menos unario `-x`)
+8.  **`atom`** (Paréntesis, números, variables): Más alta precedencia.
+
+Esto asegura que `2 + 3 * 4` se parsee como `2 + (3 * 4)`.
+
+### C. Construcción del AST (Árbol Sintáctico)
+En cada regla `p[0] = ...`, construimos una tupla que representa el nodo del árbol.
+- Ejemplo `assign_stmt`: `NAME = expr` -> `('assign', 'x', '=', 5)`
+- Ejemplo `binop`: `expr + expr` -> `('arith', '+', izq, der)`
+- Ejemplo `funcdef`: `def nombre(args): ...` -> `('func_def', nombre, [args], cuerpo)`
+
+Este AST es la "salida" del compilador, una representación estructurada del código.
+
+### D. Manejo de Errores
+- `p_error`: Se llama cuando llega un token inesperado.
+    - Si `p` existe: Imprime el token y línea.
+    - Si `p` es `None` (EOF): Significa que el archivo terminó inesperadamente (ej. falta cerrar un paréntesis).
+
+---
+
+## 4. Archivo Principal (`main.py`)
+
+El punto de entrada que une todo.
+
+1.  **Argumentos**: Verifica que se pase un archivo como argumento (`sys.argv`).
+2.  **Lectura**: Abre y lee el archivo fuente.
+3.  **Fase 1: Lexing**:
+    - Alimenta el lexer con el código.
+    - Itera sobre los tokens e imprime cada uno.
+    - Si hay errores léxicos (`lexical_errors` no vacío), detiene el proceso.
+4.  **Fase 2: Parsing**:
+    - Reinicia el lexer (importante porque es un iterador).
+    - Llama a `parser.parse(data, lexer=lexer)`.
+    - Si `parser.errors` está vacío, imprime el AST resultante (éxito).
+    - Si hay errores, reporta la cantidad.
+
+---
+
+## Preguntas Frecuentes para la Defensa
+
+1.  **¿Por qué una clase `IndentLexer`?**
+    *   Porque PLY por defecto ignora espacios y saltos de línea. Python *necesita* saber cuántos espacios hay para definir bloques. `IndentLexer` cuenta esos espacios y emite tokens "virtuales" `INDENT`/`DEDENT`.
+
+2.  **¿Cómo se maneja la ambigüedad en la gramática?**
+    *   La gramática diseñada es no ambigua gracias a la jerarquía de expresiones (terminos, factores, etc.), lo que define explícitamente la precedencia y asociatividad.
+
+3.  **¿Qué devuelve el parser?**
+    *   Devuelve una estructura de datos (tuplas anidadas) que representa el árbol sintáctico del programa, listo para ser procesado por una etapa posterior (como un generador de código o intérprete).
+
+---
+
+## 5. Archivos Generados (PLY)
+
+Al ejecutar el compilador, PLY genera dos archivos automáticamente:
+- **`parsetab.py`**: Contiene las tablas del autómata LR compiladas. Esto hace que el arranque sea más rápido en ejecuciones subsecuentes, ya que no tiene que volver a procesar la gramática.
+- **`parser.out`**: Un archivo de log detallado que describe el autómata de la gramática, los estados y, lo más importante, los **conflictos shift/reduce** o **reduce/reduce** si los hubiera. Es vital para depurar la gramática.

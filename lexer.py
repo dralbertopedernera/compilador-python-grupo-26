@@ -1,8 +1,11 @@
 import ply.lex as lex
 
 # --- Definición de Tokens ---
+# El lexer necesita una lista de tokens para exportar al parser.
 
-# Palabras reservadas
+# Palabras reservadas: Se definen en un diccionario para mapear
+# la cadena (ej: 'def') a su TIPO DE TOKEN (ej: 'DEF').
+# Esto permite diferenciar variables llamadas 'def' (ilegal) de la palabra clave.
 reserved = {
     'def': 'DEF',
     'if': 'IF',       
@@ -14,6 +17,9 @@ reserved = {
     'not': 'NOT'
 }
 
+# Lista completa de tokens:
+# Incluye los definidos arriba (reserved) y los declarados abajo como regex.
+# INDENT/DEDENT/NEWLINE son cruciales para el análisis de bloques en Python.
 tokens = [
     'NAME', 'INT', 'FLOAT', 'STRING',
     'PLUS', 'MINUS', 'TIMES', 'DIVIDE',
@@ -24,10 +30,12 @@ tokens = [
 ] + list(reserved.values())
 
 # --- Expresiones Regulares Simples ---
+# Definen tokens que no requieren procesamiento del valor (solo coincidencia).
+# El prefijo r'' indica 'raw strings' para simplificar los escapes de regex.
 
-t_PLUS    = r'\+'
+t_PLUS    = r'\+'   # Escapamos + porque es caracter especial en regex
 t_MINUS   = r'-'
-t_TIMES   = r'\*'
+t_TIMES   = r'\*'   # Escapamos *
 t_DIVIDE  = r'/'
 t_EQUAL   = r'='
 t_PLUSEQ  = r'\+='
@@ -36,12 +44,13 @@ t_EQEQ    = r'=='
 t_NEQ     = r'!='
 t_LT      = r'<'
 t_GT      = r'>'
-t_LPAREN  = r'\('
+t_LPAREN  = r'\('   # Paréntesis literales
 t_RPAREN  = r'\)'
 t_COMMA   = r','
 t_COLON   = r':'
 
 # --- Expresiones Regulares con Acción ---
+# Se usan funciones cuando necesitamos procesar el texto coincidente (t.value).
 
 def t_FLOAT(t):
     r'\d+\.\d+([eE][+-]?\d+)?'
@@ -81,8 +90,6 @@ t_ignore = ' \t'
 # Lista para acumular errores léxicos
 lexical_errors = []
 
-# ... (rest of imports/definitions if needed, but I'll stick to inserting/modifying specific chunks)
-
 def t_error(t):
     msg = f"Error léxico: Carácter ilegal '{t.value[0]}' en línea {t.lineno}"
     print(msg)
@@ -107,21 +114,18 @@ class IndentLexer(object):
         except StopIteration:
             return None
 
+    # filter_tokens es un generador que intercepta el flujo de tokens
     def filter_tokens(self, lexer):
-        indent_stack = [0]
+        indent_stack = [0] # Pila para rastrear niveles de indentación (top es nivel actual)
         tokens = iter(lexer.token, None)
+        
         
         for token in tokens:
             yield token
             if token.type == 'NEWLINE':
-                # Mirar el siguiente token para ver la indentación
-                # Necesitamos "espiar" el input del lexer para ver los espacios
-                # Pero PLY ya se comió los espacios por t_ignore.
-                # ESTRATEGIA ALTERNATIVA TÍPICA PARA PLY+PYTHON:
-                # Usar un estado o revisar lexer.lexdata en la posición actual.
+                # Al encontrar enter, chequeamos la indentación de la línea SIGUIENTE.
+                # PLY ignora espacios (t_ignore), así que debemos leer lexdata manualmente.
                 
-                # Vamos a calcular la indentación manualmente leyendo lexdata
-                # desde lexpos hasta que encontremos algo que no sea espacio.
                 
                 current_indent = 0
                 pos = lexer.lexpos
@@ -136,34 +140,14 @@ class IndentLexer(object):
                         current_indent += 4 # Asumimos tab = 4 espacios o ajuste según pref
                         pos += 1
                     elif char == '\n':
-                        # Línea vacía con espacios, reiniciamos conteo para la sig línea
+                        # Línea vacía: reiniciar conteo y avanzar
                         current_indent = 0
                         pos += 1
-                        # Opcional: emitir otro NEWLINE si queremos preservar líneas vacías
-                        # pero la gramática suele ignorarlas o colapsarlas.
-                        # Ajustar lineno manual si saltamos \n extra
                         lexer.lineno += 1
                     elif char == '#':
-                        # Comentario al inicio de linea o indentado, lo saltamos hasta el final de linea
+                        # Ignorar comentarios hasta el final de la línea
                         while pos < len(data) and data[pos] != '\n':
                             pos += 1
-                        # Si encontramos \n, se procesará en la siguiente iteración del while externo (si volvemos)
-                        # Pero aquí estamos dentro del cálculo de indent.
-                        # Simplemente continuamos el bucle de indentación desde el \n
-                        if pos < len(data) and data[pos] == '\n':
-                            # current_indent = 0 # Reset para la próxima línea
-                            # pos += 1
-                            # lexer.lineno += 1
-                            # En realidad, si hay comentario, esa linea no cuenta para indent changes
-                            # mejor dejar que el lexer normal lo procese?
-                            # El problema es que t_ignore se come los espacios antes del #.
-                            pass
-                        
-                        # Simplificación: Si es comentario, ignorar esta línea para propósitos de indent
-                        # y tratar como si tuviera la misma indentación que la anterior o simplemente 
-                        # no generar tokens INDENT/DEDENT.
-                        
-                        # Lo más fácil: dejar que el lexer siga.
                         break 
                     else:
                         break
@@ -193,9 +177,8 @@ class IndentLexer(object):
                     if current_indent != indent_stack[-1]:
                         print(f"Error de Indentación en línea {token.lineno}")
                 
-                # NO actualizamos lexer.lexpos manualmente aquí porque el lexer
-                # normal de PLY se saltará los espacios gracias a t_ignore.
-                # Solo inyectamos los tokens.
+                # No modificamos lexpos del lexer real; PLY saltará los espacios gracias a t_ignore
+                # Nosotros solo los leímos para calcular INDENT/DEDENT.
         
         # Al final del archivo, vaciar la pila de indentación
         while len(indent_stack) > 1:
