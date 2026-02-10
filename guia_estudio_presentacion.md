@@ -106,15 +106,38 @@ En nuestro compilador, definimos reglas similares para Python:
 
 Cada función en `parser.py` representa una de estas reglas.
 
-### B. Cómo funciona PLY (Paso a Paso)
-PLY usa un algoritmo LR (Left-to-Right scanning, Rightmost derivation).
-1.  **Lee tokens uno a uno**: `NAME(x)`, `EQUAL(=)`, `INT(5)`.
-2.  **Busca coincidencia**: ¿Existe alguna regla que sea `NAME EQUAL INT`?
-3.  **Reduce**: Si encuentra una regla (`assign_stmt`), agrupa esos 3 tokens en una sola "caja" (un nodo).
-4.  **Repite**: Ahora tiene una "caja de asignación". Sigue leyendo hasta completar todo el programa.
+### B. Terminales vs No Terminales (Conceptos Clave)
+Esta es la distinción más importante para entender cualquier gramática en Teoría de Lenguajes Formales:
 
-### C. La Estructura de `p` (El Array de Partes)
-Dentro de cada función, `p` actúa como un array que contiene las piezas de la regla.
+1.  **Símbolo Terminal (Token)**:
+    *   Es un elemento atómico del lenguaje definido por el análisis léxico.
+    *   No puede ser derivado ni descompuesto en otros símbolos gramaticales.
+    *   **En PLY**: Corresponde a los tokens definidos en `lexer.py` (ej. `'PLUS'`, `'IF'`, `'NAME'`).
+
+2.  **Símbolo No Terminal (Variable)**:
+    *   Es un símbolo que representa un conjunto de cadenas o estructuras sintácticas.
+    *   Se define mediante **reglas de producción** (gramática).
+    *   Puede ser sustituido por una secuencia de Terminales y/u otros No Terminales.
+    *   **En PLY**: Corresponde a los nombres de las funciones `p_` (ej. `expr`, `stmt_list`, `func_def`).
+
+**Ejemplo Formal**:
+Regla: `asignacion -> NOMBRE IGUAL EXPRESION`
+*   `NOMBRE`, `IGUAL`: Son **Terminales** (obtenidos directamente del código fuente).
+*   `EXPRESION`: Es un **No Terminal** (se deriva de otras reglas como `EXPRESION -> TERMINO + TERMINO`).
+*   `asignacion`: Es un **No Terminal** (el resultado de la regla).
+
+### C. Cómo funciona PLY (Paso a Paso)
+PLY utiliza un algoritmo **LR (Left-to-Right scanning, Rightmost derivation)**, que es un método de análisis sintáctico ascendente (bottom-up).
+
+1.  **Desplazamiento (Shift)**: Lee tokens uno a uno y los coloca en una pila.
+    *   Ejemplo: Pila = `[NAME(x), EQUAL(=), INT(5)]`.
+2.  **Reducción (Reduce)**: Identifica si los elementos en el tope de la pila coinciden con el lado derecho de una regla gramatical.
+    *   Regla encontrada: `assign_stmt : NAME EQUAL expr`.
+3.  **Acción**: Agrupa los elementos reducidos en un nuevo nodo No Terminal (`assign_stmt`) y ejecuta la función `p_assign_stmt`.
+4.  **Repetición**: Continúa hasta reducir todo el programa al símbolo inicial (`program`).
+
+### D. La Estructura de `p` (El Objeto de Producción)
+Dentro de cada función, `p` actúa como una secuencia que contiene los componentes de la regla gramatical.
 Supongamos la regla: `expr : expr PLUS term` (Suma)
 - `p[0]`: Es la **caja resultante** (lo que devolvemos).
 - `p[1]`: El primer elemento (`expr` de la izquierda).
@@ -131,7 +154,7 @@ def p_arith_expr(p):
     p[0] = ('arith', '+', p[1], p[3])
 ```
 
-### D. Recursividad y Listas
+### E. Recursividad y Listas
 ¿Cómo parseamos una lista de sentencias infinita? Usando recursividad.
 `stmt_list -> stmt_list + stmt_line`
 Traducción: "Una lista de sentencias es... una lista anterior MÁS una nueva línea".
@@ -148,7 +171,7 @@ print(x)
     - Regla: `stmt_list (anterior) + stmt_line (nuevo)`.
     - Resultado: `stmt_list` ahora tiene 2 elementos.
 
-### E. Precedencia de Operadores (Jerarquía)
+### F. Precedencia de Operadores (Jerarquía)
 Para que `2 + 3 * 4` se resuelva correctamente como `2 + (3 * 4)` y no `(2 + 3) * 4`, estructuramos la gramática en niveles:
 1.  **`atom`** (Paréntesis, números): Nivel más alto (se resuelve primero).
 2.  **`factor`** (Negativos `-5`).
@@ -159,7 +182,7 @@ Para que `2 + 3 * 4` se resuelva correctamente como `2 + (3 * 4)` y no `(2 + 3) 
 
 El parser intenta resolver primero los niveles más altos ("más pegajosos"). Como `*` está en `term` y `+` en `arith_expr`, el `term` se agrupa antes.
 
-### F. Construcción del AST (Árbol Sintáctico Abstracto)
+### G. Construcción del AST (Árbol Sintáctico Abstracto)
 El resultado final es un árbol de tuplas.
 Código: `x = 2 + 3`
 AST:
